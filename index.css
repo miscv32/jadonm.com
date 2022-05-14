@@ -1,0 +1,150 @@
+@font-face {
+    font-family: 'NeueHaasGroteskText Pro';
+    src: url('NHaasGroteskTXPro-55Rg.woff2') format('woff2'),
+        url('NHaasGroteskTXPro-55Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NeueHaasGroteskText Pro';
+    src: url('NHaasGroteskTXPro-75Bd.woff2') format('woff2'),
+        url('NHaasGroteskTXPro-75Bd.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NeueHaasGroteskText Pro Md';
+    src: url('NHaasGroteskTXPro-65Md.woff2') format('woff2'),
+        url('NHaasGroteskTXPro-65Md.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'EB Garamond';
+    src: url('EBGaramond-Regular.woff2') format('woff2'),
+        url('EBGaramond-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'EB Garamond';
+    src: url('EBGaramond-Italic.woff2') format('woff2'),
+        url('EBGaramond-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* Mobile first */
+
+body {
+    width: 80vw;
+    margin-left: 5vw;
+    margin-right: 2.5vw;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+body.dark-mode {
+    background: rgb(2,0,36);
+    background: linear-gradient(145deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    color: white;
+}
+
+h1 {
+    font-size: 3rem;
+    font-family: 'NeueHaasGroteskText Pro', Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 2rem;
+    font-family: 'NeueHaasGroteskText Pro', Arial, Helvetica, sans-serif;
+    font-weight: normal;
+}
+
+p {
+    font-size: 1.1rem;
+    font-family: 'NeueHaasGroteskText Pro', Arial, Helvetica, sans-serif;
+}
+
+/* Bigger screens */
+@media only screen and (min-width: 600px) and (max-width: 1000px){
+    body {
+      width: 60vw;
+      margin-left: 3.75vw;
+      margin-right: 1.875vw;
+    }
+
+  }
+
+@media only screen and (min-width: 1000px) {
+    body {
+        width: 40vw;
+        margin-left: 2.5vw;
+        margin-right: 1.25vw;
+    }    
+
+}
+
+
+/* CSS */
+.button-5 {
+  align-items: center;
+  background-clip: padding-box;
+  background-color: #fa6400;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: 'NeueHaasGroteskText Pro', Arial, Helvetica, sans-serif ;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  min-height: 2rem;
+  padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+  position: relative;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: auto;
+}
+
+.button-5:hover,
+.button-5:focus {
+  background-color: #fb8332;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+}
+
+.button-5:hover {
+  transform: translateY(-1px);
+}
+
+.button-5:active {
+  background-color: #c85000;
+  box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
+  transform: translateY(0);
+}
+
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
