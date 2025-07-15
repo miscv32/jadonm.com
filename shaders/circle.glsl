@@ -1,0 +1,1 @@
+float q=mod(t,4.);vec4 l=(vec4(tanh(q*5.),tanh(q)*1.3,tanh(q)*.3,1)/6.).yzxw;float n=distance(FC.xy/abs(r),vec2(.5))/tanh(q/.5)*.3;float g=tanh(n*1.9);vec4 s=vec4(g,tanh(n*.9),g,.2);float k=1.-smoothstep(n,.07,.0688)+.027;o=l/dot(s,s)*k;

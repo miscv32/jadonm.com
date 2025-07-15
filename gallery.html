@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jadon's shaders</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            overflow-x: hidden;
+        }
+        
+        .gallery-container {
+            padding: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .shader-card {
+            position: relative;
+            aspect-ratio: 1;
+            background: #ffffff;
+            border: 1px solid #cccccc;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .shader-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .shader-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .shader-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        .shader-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000000;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            text-align: center;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #666;
+            z-index: 1000;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-container {
+                padding: 2rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- Shader cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <div class="loading" id="loading" style="display: none;">Loading...</div>
+
+    <script src="./js/fragmen-standalone.js"></script>
+    <script>
+        
+        // List of shader files in the shaders directory
+        const shaderFiles = [
+            'vortex.glsl',
+            'circle.glsl',
+            'agar.glsl'
+        ];
+        
+        // Configuration for shader modes (per-shader overrides)
+        const shaderModes = {
+            // Default mode is geekest (300 es) - mode 7
+            // Add specific overrides here if needed
+            // 'example.glsl': Fragmen.MODE_CLASSIC_300, // mode 4
+        };
+        
+        const galleryGrid = document.getElementById('gallery-grid');
+        const loading = document.getElementById('loading');
+        
+        // Create shader cards
+        shaderFiles.forEach(filename => {
+            const card = createShaderCard(filename);
+            galleryGrid.appendChild(card);
+        });
+        
+        function createShaderCard(filename) {
+            const card = document.createElement('div');
+            card.className = 'shader-card';
+            card.setAttribute('data-shader', filename);
+            
+            const canvas = document.createElement('canvas');
+            canvas.className = 'shader-canvas';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            
+            const preview = document.createElement('div');
+            preview.className = 'shader-preview';
+            preview.textContent = 'loading...';
+            
+            const title = document.createElement('div');
+            title.className = 'shader-title';
+            title.textContent = filename.replace('.glsl', '').replace(/[_-]/g, ' ');
+            
+            card.appendChild(canvas);
+            card.appendChild(preview);
+            card.appendChild(title);
+            
+            // Start preview immediately (always-on)
+            startPreview(card, filename);
+            
+            // Add click listener
+            card.addEventListener('click', () => openShader(filename));
+            
+            return card;
+        }
+        
+        let activeFragmens = new Map();
+        
+        async function startPreview(card, filename) {
+            const canvas = card.querySelector('.shader-canvas');
+            const preview = card.querySelector('.shader-preview');
+            
+            try {
+                // Fetch shader source
+                const response = await fetch(`./shaders/${filename}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to load shader: ${response.status}`);
+                }
+                const shaderSource = await response.text();
+                
+                // Get shader mode (default to geekest 300 es)
+                const mode = shaderModes[filename] || Fragmen.MODE_GEEKEST_300;
+                
+                // Show canvas and hide preview text
+                canvas.style.display = 'block';
+                preview.style.display = 'none';
+                
+                // Wait a frame for the canvas to be visible and properly sized
+                await new Promise(resolve => requestAnimationFrame(resolve));
+                
+                // Create fragmen instance
+                const fragmen = new Fragmen({
+                    target: canvas,
+                    mouse: true,
+                    resize: false
+                });
+                
+                // Set mode and render
+                fragmen.mode = mode;
+                fragmen.render(shaderSource);
+                
+                // Store reference for this card
+                activeFragmens.set(card, fragmen);
+                
+            } catch (error) {
+                console.error('Error loading shader preview:', error);
+                preview.textContent = 'error loading';
+                preview.style.display = 'flex';
+            }
+        }
+        
+        function openShader(filename) {
+            // Navigate to shader editor page
+            window.location.href = `shader.html?file=${encodeURIComponent(filename)}`;
+        }
+    </script>
+    
+    <footer style="text-align: center; padding: 2rem; color: #666; font-size: 0.9rem;">
+        <p>powered by <a href="https://twigl.app" target="_blank" style="color: #666; text-decoration: none;">twigl</a></p>
+    </footer>
+</body>
+</html>
