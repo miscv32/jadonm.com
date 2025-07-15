@@ -89,6 +89,28 @@
             z-index: 1000;
         }
         
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #cccccc;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .back-button {
+            color: #ffffff;
+            background: #000000;
+            border:none;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+        
         @media (max-width: 768px) {
             .gallery-container {
                 padding: 2rem;
@@ -102,6 +124,7 @@
     </style>
 </head>
 <body>
+    <a href="https://jadonm.com/index.html" class="back-button">my homepage</a>
     <div class="gallery-container">
         <div class="gallery-grid" id="gallery-grid">
             <!-- Shader cards will be dynamically inserted here -->
