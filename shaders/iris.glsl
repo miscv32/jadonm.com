@@ -1,0 +1,1 @@
+vec2 p=(FC.yx*2.-r.xx)/min(r.x,r.y);p*=cos(p/2.)*.3;for(float i;++i<9.;){vec3 a = vec3(1,1,15)*1e2;p=cos(p/1e2);p+=(a*dot(a.xy,p)-cross(a,p.xyy)).yx-cos(t/9e3)*1e3;p*=cos(p*4e2);}vec3 c=rotate3D(t/9e3, vec3(2,9,4))*p.yxx;c*=snoise3D(sin(t)*6e-5*c);o=vec4(c,1);o=tanh(o/8e3);
