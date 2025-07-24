@@ -260,6 +260,11 @@ geekest: geeker mode + 'void main(){}' can be omitted, 'gl_FragCoord' can be des
                 // Default mode is geekest (300 es) - mode 7
                 // Add specific overrides here if needed
                 // 'example.glsl': 4, // MODE_CLASSIC_300
+                    'refract.glsl': 0,
+                    "vortex.glsl":  7,
+                    "iris.glsl":  7,
+                    "circle.glsl":  7,
+                    "agar.glsl":  7,
             };
             
             // Get URL parameters
@@ -282,7 +287,7 @@ geekest: geeker mode + 'void main(){}' can be omitted, 'gl_FragCoord' can be des
                     xhr.send();
                     if (xhr.status === 200) {
                         preloadedShader = xhr.responseText;
-                        preloadedMode = shaderModes[shaderFile] || 7; // MODE_GEEKEST_300
+                        preloadedMode = shaderModes[shaderFile]; // MODE_GEEKEST_300
                         
                         // Set URL parameters immediately for Twigl to process
                         const currentURL = new URL(window.location);
