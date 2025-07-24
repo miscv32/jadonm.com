@@ -138,6 +138,7 @@
         
         // List of shader files in the shaders directory
         const shaderFiles = [
+            "refract.glsl",
             'vortex.glsl',
             "iris.glsl",
             'circle.glsl',
@@ -148,7 +149,11 @@
         const shaderModes = {
             // Default mode is geekest (300 es) - mode 7
             // Add specific overrides here if needed
-            // 'example.glsl': Fragmen.MODE_CLASSIC_300, // mode 4
+            'refract.glsl': Fragmen.MODE_CLASSIC, // mode 4
+            "vortex.glsl":  Fragmen.MODE_GEEKEST_300,
+            "iris.glsl":  Fragmen.MODE_GEEKEST_300,
+            "circle.glsl":  Fragmen.MODE_GEEKEST_300,
+            "agar.glsl":  Fragmen.MODE_GEEKEST_300,
         };
         
         const galleryGrid = document.getElementById('gallery-grid');
@@ -206,7 +211,7 @@
                 const shaderSource = await response.text();
                 
                 // Get shader mode (default to geekest 300 es)
-                const mode = shaderModes[filename] || Fragmen.MODE_GEEKEST_300;
+                const mode = shaderModes[filename];
                 
                 // Show canvas and hide preview text
                 canvas.style.display = 'block';
