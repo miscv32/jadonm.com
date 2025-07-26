@@ -138,11 +138,12 @@
         
         // List of shader files in the shaders directory
         const shaderFiles = [
+            "grid.glsl",
             "refract.glsl",
             'vortex.glsl',
             "iris.glsl",
             'circle.glsl',
-            'agar.glsl'
+            'agar.glsl',
         ];
         
         // Configuration for shader modes (per-shader overrides)
@@ -154,6 +155,7 @@
             "iris.glsl":  Fragmen.MODE_GEEKEST_300,
             "circle.glsl":  Fragmen.MODE_GEEKEST_300,
             "agar.glsl":  Fragmen.MODE_GEEKEST_300,
+            "grid.glsl": Fragmen.MODE_CLASSIC_300,
         };
         
         const galleryGrid = document.getElementById('gallery-grid');
