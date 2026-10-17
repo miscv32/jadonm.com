@@ -1,0 +1,29 @@
+{
+  "log": [
+    {
+      "id": "einsum-for-programmers",
+      "date": "2026-10-17",
+      "text": "blog post: [Einsum for ~~dummies~~ programmers](posts/einsum-for-programmers.html)."
+    },
+    {
+      "id": "outlook-email-reply-threading",
+      "date": "2026-10-17",
+      "text": "blog post: [outlook email reply threading](posts/outlook-email-reply-threading.html)."
+    },
+    {
+      "id": "scgb-v0.0.0",
+      "date": "2025-09-26",
+      "text": "v0.0.0 of [my game boy emulator](https://github.com/miscv32/scgb/releases/tag/v0.0.0) has been released."
+    },
+    {
+      "id": "shader-gallery",
+      "date": "2025-07-15",
+      "text": "[shader gallery](https://jadonm.com/gallery.html) created to display my shader art."
+    },
+    {
+      "id": "statpack",
+      "date": "2024-12-11",
+      "text": "[statpack.jadonm.com](https://statpack.jadonm.com/) now hosts my A-Level CS project. it is a statistics calculator/spreadsheet web app."
+    }
+  ]
+}

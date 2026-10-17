@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="160x160" href="../favicon.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/doto-500.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="../post.css">
+    <title>$pagetitle$ · jadon mensah</title>
+    $if(description)$<meta name="description" content="$description$">$endif$
+    $if(highlighting-css)$<style>$highlighting-css$</style>$endif$
+    $if(math)$$math$$endif$
+</head>
+<body class="post">
+    <div id="main">
+        <header id="header"><h1><a href="../index.html">jadonm.com</a></h1></header>
+        <main id="content">
+            <article>
+                <header class="article-header">
+                    <h1>$title$</h1>
+                    $if(date)$<p class="de-emph">Published <time datetime="$date$">$date$</time>$if(updated)$ · Updated <time datetime="$updated$">$updated$</time>$endif$</p>$endif$
+                </header>
+                $if(toc)$
+                <nav id="TOC" aria-label="Table of contents">
+                    <h2>Contents</h2>
+                    $table-of-contents$
+                </nav>
+                $endif$
+                $body$
+            </article>
+        </main>
+        <footer id="footer">
+            <a href="https://github.com/miscv32">github</a>
+            <a href="https://x.com/miscv32">twitter</a>
+            <a href="https://linkedin.com/in/jadonm/">linkedin</a>
+            <p>email: initials + 2675 [at] cam.ac.uk</p>
+        </footer>
+    </div>
+</body>
+</html>

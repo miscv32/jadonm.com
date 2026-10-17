@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="160x160" href="../favicon.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/doto-500.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="../post.css">
+    <title>Einsum for dummies programmers · jadon mensah</title>
+    
+    <style>pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */</style>
+    
+</head>
+<body class="post">
+    <div id="main">
+        <header id="header"><h1><a href="../index.html">jadonm.com</a></h1></header>
+        <main id="content">
+            <article>
+                <header class="article-header">
+                    <h1>Einsum for <del>dummies</del> programmers</h1>
+                    <p class="de-emph">Published <time datetime="2026-10-17">2026-10-17</time></p>
+                </header>
+                                <nav id="TOC" aria-label="Table of contents">
+                    <h2>Contents</h2>
+                    <ul>
+                    <li><a href="#assumptions"
+                    id="toc-assumptions">Assumptions</a></li>
+                    <li><a href="#what-the-hell-is-an-einsum"
+                    id="toc-what-the-hell-is-an-einsum">What the hell is
+                    an “einsum”??</a></li>
+                    <li><a href="#specifying-axes"
+                    id="toc-specifying-axes">Specifying axes</a></li>
+                    <li><a href="#whats-between-the-commas"
+                    id="toc-whats-between-the-commas">What’s between the
+                    commas?</a></li>
+                    <li><a href="#the-comma" id="toc-the-comma">The
+                    comma</a></li>
+                    <li><a href="#right-of-the-arrow"
+                    id="toc-right-of-the-arrow">Right of the
+                    arrow</a></li>
+                    <li><a href="#nota-bene" id="toc-nota-bene">Nota
+                    bene</a></li>
+                    <li><a href="#links" id="toc-links">Links</a></li>
+                    <li><a href="#acknowledgements"
+                    id="toc-acknowledgements">Acknowledgements</a></li>
+                    </ul>
+                </nav>
+                                <section id="assumptions"
+                                class="level2">
+                                <h2>Assumptions</h2>
+                                <p>You are familiar with programming in
+                                a procedural language (for loops, if
+                                statements, multi-dimensional array
+                                indexing). You know what scalars,
+                                matrices and tensors are. You are
+                                familiar with matrix multiplication. You
+                                know what a set is. You know what the
+                                trace of a matrix is.</p>
+                                </section>
+                                <section id="what-the-hell-is-an-einsum"
+                                class="level2">
+                                <h2>What the hell is an “einsum”??</h2>
+                                <p>Einsum is a <del>notation</del> DSL
+                                for expressing tensor operations. It is
+                                supported in popular (as of October
+                                2026) Python libraries NumPy, PyTorch
+                                and JAX, with an API that looks
+                                like:</p>
+                                <div class="sourceCode" id="cb1"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>einsum(<span class="st">&quot;ij,jk-&gt;ik&quot;</span>, a, b)</span></code></pre></div>
+                                </section>
+                                <section id="specifying-axes"
+                                class="level2">
+                                <h2>Specifying axes</h2>
+                                <p>Each axis of each tensor is referred
+                                to by a single English-alphabetic letter
+                                (the “label”) which may or may not be
+                                unique.</p>
+                                </section>
+                                <section id="whats-between-the-commas"
+                                class="level2">
+                                <h2>What’s between the commas?</h2>
+                                <p>On the left hand side of the arrow,
+                                there are a number of alphabetic strings
+                                (“subscript strings”) separated by
+                                commas. You can think of the subscript
+                                strings as selecting <em>sets</em> of
+                                indices in the tensor, whereas an index
+                                like <code>M[1][2][3]</code> selects a
+                                single scalar element from the tensor.
+                                The rules are that there must be as many
+                                subscript strings as there are input
+                                tensors, and that each subscript string
+                                must have as many labels as the
+                                corresponding tensor has dimensions.</p>
+                                <p>One way to understand subscript
+                                strings is by imagining writing
+                                <code>for</code>-loops over all the
+                                tensor dimensions in the usual
+                                manner.</p>
+                                <div class="sourceCode" id="cb2"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ijk <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>iii <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(length_of_axis_0):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(length_of_axis_1):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(length_of_axis_2):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            ijk.add((i,j,k))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            iii.add((i,i,i))</span></code></pre></div>
+                                <p>This brings up an important problem:
+                                not all subscript strings are valid for
+                                all tensors. It depends on the relative
+                                sizes of the tensor dimensions. The
+                                subscript string <code>ii</code> is
+                                invalid for non-square matrices, do you
+                                see why?</p>
+                                </section>
+                                <section id="the-comma" class="level2">
+                                <h2>The comma</h2>
+                                <p>Let’s consider
+                                <code>einsum("ij,jk-&gt;ik", a, b)</code>
+                                as an illustration of what the comma
+                                does:</p>
+                                <div class="sourceCode" id="cb3"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_0):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j1 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_1):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j2 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_0):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_1):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> j1 <span class="op">==</span> j2:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                    j <span class="op">=</span> j1 <span class="co"># = j2</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                    T[i][j][k] <span class="op">=</span> a[i][j] <span class="op">*</span> b[j][k] <span class="co"># T is a temporary tensor, with axes given by all the unique labels from all of the subscript strings.</span></span></code></pre></div>
+                                <p>Some important considerations:</p>
+                                <ul>
+                                <li>Disallow
+                                <code>length_of_a_axis_1 != length_of_b_axis_0</code>.
+                                Like we saw before, if we have two axes
+                                (in the same tensor, or in separate
+                                tensors) labelled with the same letter,
+                                they should have the same length.</li>
+                                </ul>
+                                <p>As another example, let’s consider
+                                <code>einsum("ii,ii-&gt;", a, b)</code>
+                                (don’t worry about the lack of letters
+                                to the right hand side of the arrow,
+                                we’ll get to that)</p>
+                                <div class="sourceCode" id="cb4"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i1 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_0):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i2 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_1):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i3 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_0):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i4 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_1):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> i1 <span class="op">==</span> i2 <span class="op">==</span> i3 <span class="op">==</span> i4:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                    i <span class="op">=</span> i1 <span class="co"># = i2 = i3 = i4</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                    T[i] <span class="op">=</span> a[i][i] <span class="op">*</span> b[i][i]</span></code></pre></div>
+                                <p>Alright, one more example:
+                                <code>einsum("ii,ij-&gt;", a, b)</code></p>
+                                <div class="sourceCode" id="cb5"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i1 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_0):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i2 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_1):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i3 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_0):</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_1):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> i1 <span class="op">==</span> i2 <span class="op">==</span> i3:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                    i <span class="op">=</span> i1 <span class="co"># = i2 = i3</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                    T[i][j] <span class="op">=</span> a[i][i] <span class="op">*</span> b[i][j]</span></code></pre></div>
+                                <p>In general, the idea is to loop over
+                                the labelled axes, and where
+                                equally-labeled axes take the same
+                                index, multiply and write to the
+                                temporary tensor.</p>
+                                <p>All the examples here have been for
+                                single-comma left-hand-side expressions.
+                                It should be fairly straightforward for
+                                you to extend this to multiple commas.
+                                You can try writing the
+                                <code>for</code>-loops for
+                                <code>einsum("ijk,jki,kij-&gt;", a, b, c)</code>
+                                as an exercise if you’re a sweaty little
+                                try-hard, or just keep reading if you’re
+                                a lazy bum.</p>
+                                </section>
+                                <section id="right-of-the-arrow"
+                                class="level2">
+                                <h2>Right of the arrow</h2>
+                                <p>The subscript string to the right of
+                                the arrow tells you which axes to retain
+                                and in which order. The axes that are
+                                not retained should be summed over, such
+                                that the output has the shape implied.
+                                Also, you can’t introduce new labels in
+                                the right-hand subscript string or use
+                                the same label more than once.</p>
+                                <p>Consider
+                                <code>einsum("ijk,jjk-&gt;kj",a,b)</code>.</p>
+                                <p>The label <code>i</code> is omitted
+                                from the string to the right, which
+                                means we need to sum over
+                                <code>i</code>. The ordering of the
+                                labels tells you the ordering of axes in
+                                the result tensor, R.</p>
+                                <div class="sourceCode" id="cb6"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_0):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j1 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_1):</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> k1 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_2):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j2 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_0):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> j3 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_1):</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> k2 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_2):</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> j1 <span class="op">==</span> j2 <span class="op">==</span> j3 <span class="kw">and</span> k1 <span class="op">==</span> k2:</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                            j <span class="op">=</span> j1 <span class="co"># = j2 = j3</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                            k <span class="op">=</span> k1 <span class="co"># = k2</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                            T[i][j][k] <span class="op">=</span> a[i][j][k] <span class="op">*</span> b[j][j][k]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(T)):</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(T[<span class="dv">0</span>])):</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(T[<span class="dv">0</span>][<span class="dv">0</span>])):</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            R[k][j] <span class="op">+=</span> T[i][j][k]</span></code></pre></div>
+                                <p>The try-hards reading this will note
+                                that it is not strictly necessary to
+                                introduce <code>T</code> at all, so we
+                                can simplify this to one set of nested
+                                <code>for</code>-loops like so:</p>
+                                <div class="sourceCode" id="cb7"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_0):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j1 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_1):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> k1 <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_2):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j2 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_0):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> j3 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_1):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> k2 <span class="kw">in</span> <span class="bu">range</span>(length_of_b_axis_2):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> j1 <span class="op">==</span> j2 <span class="op">==</span> j3 <span class="kw">and</span> k1 <span class="op">==</span> k2:</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                            j <span class="op">=</span> j1 <span class="co"># = j2 = j3</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                            k <span class="op">=</span> k1 <span class="co"># = k2</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                            R[k][j] <span class="op">+=</span> a[i][j][k] <span class="op">*</span> b[j][j][k]</span></code></pre></div>
+                                <p>Of course, we don’t actually need so
+                                many <code>for</code>-loops here either
+                                (nor did we in any of the previous
+                                examples with repeated labels), so we
+                                can go further:</p>
+                                <div class="sourceCode" id="cb8"><pre
+                                class="sourceCode py"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_0):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_1):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(length_of_a_axis_2):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            R[k][j] <span class="op">+=</span> a[i][j][k] <span class="op">*</span> b[j][j][k]</span></code></pre></div>
+                                <p>Where the right-hand subscript string
+                                is empty, we sum over all axes of
+                                <code>T</code> to produce a scalar.
+                                Therefore, as an example,
+                                <code>einsum("ii-&gt;", a)</code> =
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Tr(A)</annotation></semantics></math>.</p>
+                                </section>
+                                <section id="nota-bene" class="level2">
+                                <h2>Nota bene</h2>
+                                <p>The einsum implementations in NumPy,
+                                PyTorch and JAX support <a
+                                href="https://numpy.org/doc/stable/user/basics.broadcasting.html">broadcasting</a>,
+                                and working with tensors of arbitrary
+                                dimension via the ellipsis notation,
+                                which I don’t discuss in this post.</p>
+                                </section>
+                                <section id="links" class="level2">
+                                <h2>Links</h2>
+                                <p><a
+                                href="https://www.youtube.com/watch?v=pkVwUVEHmfI">Aladdin
+                                Persson - Einsum Is All You Need: NumPy,
+                                PyTorch and TensorFlow</a> - introduced
+                                me to <code>einsum</code>.</p>
+                                <p><a
+                                href="https://obilaniu6266h16.wordpress.com/2016/02/04/einstein-summation-in-numpy/">Olexa
+                                Bilaniuk - Einstein Summation in
+                                Numpy</a> - explains broadly the same
+                                content as this post, has diagrams which
+                                I found confusing but you may find
+                                helpful.</p>
+                                <p><a
+                                href="https://rockt.ai/2018/04/30/einsum">Tim
+                                Rocktäschel - Einsum is All You Need –
+                                Einstein Summation in Deep Learning</a>
+                                - lots of examples of common operations
+                                expressed in einsum notation.</p>
+                                </section>
+                                <section id="acknowledgements"
+                                class="level2">
+                                <h2>Acknowledgements</h2>
+                                <p>Thanks to <a
+                                href="https://aaravbhatt.dev">Aarav
+                                Bhatt</a> for proofreading and providing
+                                feedback :)</p>
+                                <p>All the words and code samples in
+                                this post were written by me. However, I
+                                used GPT-5.6 Sol as a critic while
+                                writing the post, mostly to check
+                                factual correctness, and also for some
+                                initial learning. You can read the chat
+                                log <a
+                                href="https://chatgpt.com/share/6ab03fe9-6ce0-83eb-a188-5a5a0659fbf6">here</a>.</p>
+                                </section>
+            </article>
+        </main>
+        <footer id="footer">
+            <a href="https://github.com/miscv32">github</a>
+            <a href="https://x.com/miscv32">twitter</a>
+            <a href="https://linkedin.com/in/jadonm/">linkedin</a>
+            <p>email: initials + 2675 [at] cam.ac.uk</p>
+        </footer>
+    </div>
+</body>
+</html>

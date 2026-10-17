@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="160x160" href="../favicon.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/doto-500.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="../post.css">
+    <title>outlook email reply threading · jadon mensah</title>
+    
+    
+    
+</head>
+<body class="post">
+    <div id="main">
+        <header id="header"><h1><a href="../index.html">jadonm.com</a></h1></header>
+        <main id="content">
+            <article>
+                <header class="article-header">
+                    <h1>outlook email reply threading</h1>
+                    <p class="de-emph">Published <time datetime="2026-10-17">2026-10-17</time></p>
+                </header>
+                                <p>...is header-based. You might run
+                                into issues sending threaded replies to
+                                Outlook users programatically because
+                                the headers it uses for this are
+                                nonstandard. <a
+                                href="https://datatracker.ietf.org/doc/html/rfc5322">RFC
+                                5322</a> defines a much simpler, but
+                                more limited, standard for reply
+                                threading.</p>
+                                <p>The <code>Thread-Topic</code> header
+                                is self explanatory</p>
+                                <p>The <code>Thread-Index</code> header
+                                is base64-encoded binary data which
+                                contains a header struct + 1 struct per
+                                additional reply to the thread</p>
+                                <p>Header struct format:</p>
+                                <table>
+                                <thead>
+                                <tr>
+                                <th>Byte range (inclusive, little-endian
+                                numbering)</th>
+                                <th>Contents</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <td>0</td>
+                                <td>0x01</td>
+                                </tr>
+                                <tr>
+                                <td>1-5</td>
+                                <td>high 40 bits of a Windows
+                                <code>FILETIME</code></td>
+                                </tr>
+                                <tr>
+                                <td>6-21</td>
+                                <td>thread GUID</td>
+                                </tr>
+                                </tbody>
+                                </table>
+                                <p>A Windows <code>FILETIME</code> is an
+                                unsigned 64 bit integer counting the
+                                number of 100ns intervals since 00:00 1
+                                January 1601 UTC</p>
+                                <p>Reply struct format:</p>
+                                <table>
+                                <thead>
+                                <tr>
+                                <th>Bit range (inclusive, little-endian
+                                numbering)</th>
+                                <th>Context</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <td>0</td>
+                                <td>Delta code</td>
+                                </tr>
+                                <tr>
+                                <td>1-31</td>
+                                <td>Time delta</td>
+                                </tr>
+                                <tr>
+                                <td>32-39</td>
+                                <td>Random 8 bits</td>
+                                </tr>
+                                </tbody>
+                                </table>
+                                <p>To populate the reply struct, first
+                                we need to subtract the root email
+                                <code>FILETIME</code> from the reply
+                                <code>FILETIME</code> to produce the
+                                time difference. Then (using big-endian
+                                bit numbering here):</p>
+                                <p>The delta code is set to 0 if no bit
+                                more significant than bit 48 is set.
+                                Otherwise it is set to 1. This
+                                corresponds to time differences greater
+                                than about 1.7 years having a delta code
+                                of 1.</p>
+                                <p>If the delta code is set to 0,
+                                right-shift the time difference by 18
+                                bits and store the low 31 bits of the
+                                result as the time delta.</p>
+                                <p>If the delta code is set to 1,
+                                right-shift the time difference by 23
+                                bits and store the low 31 bits of the
+                                result as the time delta</p>
+                                <p>This allows us to store a larger
+                                range of time differences at the expense
+                                of worse precision for time differences
+                                larger than 1.7 years.</p>
+            </article>
+        </main>
+        <footer id="footer">
+            <a href="https://github.com/miscv32">github</a>
+            <a href="https://x.com/miscv32">twitter</a>
+            <a href="https://linkedin.com/in/jadonm/">linkedin</a>
+            <p>email: initials + 2675 [at] cam.ac.uk</p>
+        </footer>
+    </div>
+</body>
+</html>
