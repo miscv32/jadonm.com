@@ -1,6 +1,11 @@
 {
   "log": [
     {
+      "id": "understanding-lrh",
+      "date": "2026-11-14",
+      "text": "blog post: [Understanding the Linear Representation Hypothesis](posts/understanding-lrh.html)."
+    },
+    {
       "id": "einsum-for-programmers",
       "date": "2026-10-17",
       "text": "blog post: [Einsum for ~~dummies~~ programmers](posts/einsum-for-programmers.html)."
