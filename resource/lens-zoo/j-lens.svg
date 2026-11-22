@@ -1,0 +1,242 @@
+<?xml-stylesheet type="text/css" href="../../figure-motion.css"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 436 584"
+     preserveAspectRatio="xMidYMin slice">
+  <title>How the Jacobian lens works</title>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    text {
+      fill: #e0e0e0;
+      font: 18px "Latin Modern Sans", sans-serif;
+      text-anchor: middle;
+    }
+    .note { fill: #b8c7d6; font-size: 16px; }
+    .accent { fill: #91ccff; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .black-box { fill: #08090b; }
+    .projection { fill: #203548; stroke: #4dabf7; }
+    .merge { fill: #20252c; stroke: #b8c7d6; stroke-width: 1.8; }
+    .plus { stroke: #e0e0e0; stroke-width: 1.5; stroke-linecap: round; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .arrow { marker-end: url(#arrow); }
+    .slide, .average-step { display: none; }
+    .slide:target, .average-step:target ~ #average, svg:not(:has(:target)) #average { display: inline; }
+    .average-flow { transform: translateY(116px); }
+    .context-name { display: none; }
+    #average:target .context-4,
+    svg:not(:has(:target)) #average .context-1,
+    #average-1:target ~ #average .context-1,
+    #average-2:target ~ #average .context-2,
+    #average-3:target ~ #average .context-3,
+    #average-4:target ~ #average .context-4 { display: inline; }
+    .response-vector {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      color: #7f8a96;
+    }
+    .mean-vector { color: #91ccff; stroke-width: 3; }
+    .column-vector { color: #b8c7d6; }
+    .store-wire { stroke: #91ccff; marker-end: url(#store-arrow); }
+    .mean-link { stroke-dasharray: 4 4; opacity: 0.55; }
+    svg:not(:has(:target)) #average :is(.vector-2, .vector-3, .vector-4),
+    #average-1:target ~ #average :is(.vector-2, .vector-3, .vector-4),
+    #average-2:target ~ #average :is(.vector-3, .vector-4),
+    #average-3:target ~ #average .vector-4 { display: none; }
+    .mean-response, .stored-response { opacity: 0; visibility: hidden; }
+    #average:target :is(.mean-response, .stored-response) { opacity: 1; visibility: visible; }
+    svg:not(:has(:target)) #average .vector-1,
+    #average-1:target ~ #average .vector-1,
+    #average-2:target ~ #average .vector-2,
+    #average-3:target ~ #average .vector-3,
+    #average-4:target ~ #average .vector-4 { color: #f0bb76; }
+    @media (prefers-reduced-motion: no-preference) {
+      .slide, .context-name, .context-vector {
+        animation: fade-in var(--figure-fade) var(--figure-fade-ease) both;
+      }
+      .context-vector { transition: color var(--figure-fade) var(--figure-fade-ease); }
+      #average-4:target ~ #average :is(.mean-response, .stored-response) {
+        transition: opacity var(--figure-fade) var(--figure-fade-ease), visibility 0s var(--figure-fade);
+      }
+      #average:target :is(.mean-response, .stored-response) {
+        transition: opacity var(--figure-fade) var(--figure-fade-ease);
+      }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M0 0 L9 4 L0 8 Z" fill="#b8c7d6"/>
+    </marker>
+    <marker id="store-arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M0 0 L9 4 L0 8 Z" fill="#91ccff"/>
+    </marker>
+    <path id="mean-vector" d="M0 0 L5 -53 M10 -44 L5 -53 L-2 -45"/>
+    <g id="jacobian-columns">
+      <rect class="node projection" x="172" y="0" width="92" height="44" rx="4"/>
+      <path class="wire" d="M47 0 H36 V44 H47 M389 0 H400 V44 H389"/>
+      <text x="21" y="28">J</text>
+      <text class="note" x="148" y="27">⋯</text>
+      <text class="note" x="288" y="27">⋯</text>
+      <path class="response-vector column-vector" d="M65 34 L52 13 M52 20 V13 L59 16"/>
+      <path class="response-vector column-vector" d="M336 34 L346 12 M339 16 L346 12 L347 20"/>
+      <text x="91" y="28">Je<tspan dy="3" font-size="12">1</tspan></text>
+      <text x="366" y="28">Je<tspan dy="3" font-size="12">d</tspan></text>
+    </g>
+    <g id="jacobian-response">
+      <use class="response-vector mean-vector" href="#mean-vector" transform="translate(201 34) scale(.46)"/>
+      <text class="accent" x="233" y="28">Je<tspan dy="3" font-size="12">c</tspan></text>
+    </g>
+  </defs>
+  <rect width="436" height="584" fill="#121212"/>
+
+  <g class="average-step" id="average-1"/>
+  <g class="average-step" id="average-2"/>
+  <g class="average-step" id="average-3"/>
+  <g class="average-step" id="average-4"/>
+
+  <g class="slide" id="average" role="img" aria-labelledby="average-title average-description">
+    <title id="average-title">Average the response to a basis perturbation</title>
+    <desc id="average-description">Read from bottom to top. The earlier transformer blocks process the input context to produce the shared activation h. The remaining blocks take h on one branch and h plus the fixed perturbation epsilon times basis vector e c on the other. Subtract the unperturbed final residual from the perturbed final residual and divide by epsilon. Swap in a new context and repeat, keeping the perturbation fixed. Each example response is an arrow. The blue mean arrow is stored as column c of the averaged Jacobian, J times e c.</desc>
+    <g aria-hidden="true">
+      <g class="stored-response">
+        <text class="note" x="80" y="24">1</text>
+        <text class="note accent" x="218" y="24">c</text>
+        <text class="note" x="356" y="24">d</text>
+        <use href="#jacobian-columns" y="35"/>
+        <use href="#jacobian-response" y="35"/>
+        <path class="wire store-wire mean-link" d="M223 155 V79"/>
+      </g>
+      <g class="average-flow">
+        <rect class="node" x="57" y="391" width="322" height="32" rx="4"/>
+        <text class="context-name context-1" x="218" y="413">1 · “The capital of Texas is”</text>
+        <text class="context-name context-2" x="218" y="413">2 · “The recipe calls for”</text>
+        <text class="context-name context-3" x="218" y="413">3 · “She opened the window and”</text>
+        <text class="context-name context-4" x="218" y="413">4 · “To solve the equation,”</text>
+
+        <path class="wire arrow" d="M218 391 V365"/>
+        <rect class="node" x="91" y="333" width="254" height="32" rx="4"/>
+        <text x="218" y="355">earlier transformer blocks</text>
+
+        <path class="wire" d="M218 333 V325"/>
+        <path class="wire arrow" d="M218 325 H119 Q111 325 111 317 V309"/>
+        <path class="wire arrow" d="M218 325 H317 Q325 325 325 317 V309"/>
+        <circle cx="218" cy="325" r="3.5" fill="#4dabf7"/>
+        <rect class="node projection" x="23" y="279" width="176" height="30" rx="4"/>
+        <rect class="node" x="237" y="279" width="176" height="30" rx="4"/>
+        <text x="111" y="300">h <tspan class="accent">+ εe<tspan dy="3" font-size="12">c</tspan></tspan></text>
+        <text x="325" y="300">h</text>
+
+        <path class="wire arrow" d="M111 279 V258"/>
+        <path class="wire arrow" d="M325 279 V258"/>
+        <rect class="node black-box" x="23" y="227" width="176" height="31" rx="4"/>
+        <rect class="node black-box" x="237" y="227" width="176" height="31" rx="4"/>
+        <text x="111" y="248">remaining blocks, F</text>
+        <text x="325" y="248">remaining blocks, F</text>
+
+        <path class="wire arrow" d="M111 227 V205"/>
+        <path class="wire arrow" d="M325 227 V205"/>
+        <rect class="node projection" x="23" y="174" width="176" height="31" rx="4"/>
+        <rect class="node" x="237" y="174" width="176" height="31" rx="4"/>
+        <text x="111" y="195">F(h + εe<tspan dy="3" font-size="12">c</tspan><tspan dy="-3">)</tspan></text>
+        <path class="wire" d="M211 189.5 H225" stroke-width="2.4"/>
+        <text x="325" y="195">F(h)</text>
+        <path class="wire" d="M111 174 V169 Q111 161 119 161 H317 Q325 161 325 169 V174"/>
+        <path class="wire arrow" d="M218 161 V147"/>
+        <rect class="node" x="141" y="118" width="154" height="29" rx="4"/>
+        <text x="218" y="138">divide by ε</text>
+
+        <path class="wire arrow" d="M218 118 V102"/>
+        <!-- The highlighted arrow is the arithmetic mean of the four example displacements. -->
+        <g transform="translate(218 100)">
+          <path class="response-vector context-vector vector-1" d="M0 0 L-62 -35 M-52 -35 L-62 -35 L-57 -26"/>
+          <path class="response-vector context-vector vector-2" d="M0 0 L-22 -73 M-15 -66 L-22 -73 L-25 -63"/>
+          <path class="response-vector context-vector vector-3" d="M0 0 L68 -37 M63 -28 L68 -37 L58 -38"/>
+          <path class="response-vector context-vector vector-4" d="M0 0 L36 -67 M37 -57 L36 -67 L27 -62"/>
+          <use class="response-vector mean-vector mean-response" href="#mean-vector"/>
+          <circle r="2.5" fill="#b8c7d6"/>
+        </g>
+        <g class="mean-response">
+          <text class="accent" x="322" y="27">mean response</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <g class="slide" id="readout" role="img" aria-labelledby="readout-title readout-description">
+    <title id="readout-title">Use the average Jacobian to read out a new vector</title>
+    <desc id="readout-description">Decompose a new residual-stream perturbation into basis components. Each basis vector picks out a column of J. For example, e c picks out the blue mean response from the previous slide. Scale each column by the corresponding coefficient and add the results at the circled plus. Normalise and unembed the sum to get logits, then apply softmax. The example probabilities for Austin, Dallas, and Houston are 0.72, 0.13, and 0.06. The underscore before each token marks a leading space. The paper uses the same readout on an activation vector.</desc>
+    <g aria-hidden="true">
+      <g transform="translate(0 56)">
+        <text x="218" y="511">new perturbation, v</text>
+        <path class="wire arrow" d="M218 487 V437"/>
+        <path class="wire arrow" d="M218 466 H88 Q80 466 80 458 V437"/>
+        <path class="wire arrow" d="M218 466 H348 Q356 466 356 458 V437"/>
+
+        <rect class="node" x="25" y="407" width="110" height="30" rx="4"/>
+        <rect class="node projection" x="163" y="407" width="110" height="30" rx="4"/>
+        <rect class="node" x="301" y="407" width="110" height="30" rx="4"/>
+        <text x="80" y="427">a₁e₁</text>
+        <text x="218" y="427">a<tspan dy="3" font-size="12">c</tspan><tspan class="accent" dy="-3">e</tspan><tspan class="accent" dy="3" font-size="12">c</tspan></text>
+        <text x="356" y="427">a<tspan dy="3" font-size="12">d</tspan><tspan dy="-3">e</tspan><tspan dy="3" font-size="12">d</tspan></text>
+
+        <path class="wire arrow" d="M80 407 V389"/>
+        <path class="wire store-wire" d="M218 407 V389"/>
+        <path class="wire arrow" d="M356 407 V389"/>
+        <use href="#jacobian-columns" y="345"/>
+        <use href="#jacobian-response" y="345"/>
+        <path class="wire arrow" d="M80 345 V309"/>
+        <path class="wire store-wire" d="M218 345 V309"/>
+        <path class="wire arrow" d="M356 345 V309"/>
+
+        <rect class="node" x="25" y="275" width="110" height="34" rx="4"/>
+        <rect class="node projection" x="163" y="275" width="110" height="34" rx="4"/>
+        <rect class="node" x="301" y="275" width="110" height="34" rx="4"/>
+        <text x="80" y="298">a₁ · Je₁</text>
+        <text x="218" y="298">a<tspan dy="3" font-size="12">c</tspan><tspan dy="-3"> · Je</tspan><tspan dy="3" font-size="12">c</tspan></text>
+        <text x="356" y="298">a<tspan dy="3" font-size="12">d</tspan><tspan dy="-3"> · Je</tspan><tspan dy="3" font-size="12">d</tspan></text>
+      </g>
+
+      <path class="wire" d="M80 331 V316 Q80 308 88 308 H348 Q356 308 356 316 V331"/>
+      <path class="wire arrow" d="M218 331 V289"/>
+      <g transform="translate(218 280)">
+        <circle class="merge" r="9"/>
+        <path class="plus" d="M-3.5 0 H3.5 M0 -3.5 V3.5"/>
+      </g>
+      <path class="wire arrow" d="M218 271 V234"/>
+      <rect class="node projection" x="100" y="202" width="236" height="32" rx="4"/>
+      <text x="218" y="223">normalise &amp; unembed</text>
+      <path class="wire arrow" d="M218 202 V170"/>
+      <text class="note" x="265" y="191">logits</text>
+      <rect class="node projection" x="153" y="138" width="130" height="32" rx="4"/>
+      <text x="218" y="159">softmax</text>
+      <path class="wire arrow" d="M218 138 V110"/>
+
+      <rect class="node" x="102" y="12" width="232" height="98" rx="4"/>
+      <path d="M218 12 V110 M102 38 H334 M102 62 H334 M102 86 H334" fill="none" stroke="#536171"/>
+      <text class="note" x="160" y="31">p(token)</text>
+      <text class="note" x="276" y="31">token</text>
+      <text x="160" y="56">0.72</text>
+      <text x="276" y="56">_Austin</text>
+      <text x="160" y="80">0.13</text>
+      <text x="276" y="80">_Dallas</text>
+      <text x="160" y="104">0.06</text>
+      <text x="276" y="104">_Houston</text>
+    </g>
+  </g>
+</svg>

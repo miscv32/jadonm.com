@@ -1,0 +1,153 @@
+<?xml-stylesheet type="text/css" href="../../figure-motion.css"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 40 436 714"
+     preserveAspectRatio="xMidYMin slice"
+     role="group" aria-labelledby="diagram-title" aria-describedby="diagram-description">
+  <title id="diagram-title">Transformer residual stream and logit lens</title>
+  <desc id="diagram-description">Read from bottom to top. Token embeddings enter the residual stream. Each block adds the outputs of parallel attention heads to the stream, then adds the MLP output. In the full transformer, unembedding reads the final block's output to produce logits. In the logit lens view, the last two blocks are removed and the same unembedding reads the first block's output.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-bold.otf") format("opentype");
+      font-weight: 700;
+    }
+    text { fill: #e0e0e0; font: 18px "Latin Modern Sans", sans-serif; }
+    .label { text-anchor: middle; }
+    .strong { font-weight: 700; }
+    .note { fill: #b8c7d6; font-size: 16px; }
+    .wire, .brace {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .arrow { marker-end: url(#arrow); }
+    .brace { stroke: #88939f; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .attention { fill: #392a18; stroke: #e0ad5e; }
+    .mlp { fill: #30243d; stroke: #ba9cdd; }
+    .projection { fill: #203548; stroke: #4dabf7; }
+    .merge { fill: #20252c; stroke: #b8c7d6; stroke-width: 1.8; }
+    .plus { stroke: #e0e0e0; stroke-width: 1.5; stroke-linecap: round; }
+    #diagram, #output { transition: transform var(--figure-move) var(--figure-move-ease) var(--figure-fade); }
+    #later-blocks { transition: opacity var(--figure-fade) var(--figure-fade-ease) var(--figure-reveal); }
+    .lens #diagram { transform: translateY(-324px); }
+    .lens #later-blocks { opacity: 0; transition-delay: 0ms; }
+    .lens #output { transform: translateY(324px); }
+    #translator { opacity: 0; transition: opacity var(--figure-fade) var(--figure-fade-ease); }
+    .tuned.lens #diagram { transform: translateY(-244px); }
+    .tuned.lens #output { transform: translateY(244px); }
+    .tuned.lens #translator { opacity: 1; transition-delay: var(--figure-reveal); }
+    #omitted-blocks { display: none; }
+    .recap #later-blocks, .recap #readout-point { display: none; }
+    .recap #omitted-blocks { display: inline; fill: #b8c7d6; }
+    .recap #output { transform: translateY(276px); transition: none; }
+    @media (prefers-reduced-motion: reduce) {
+      #diagram, #output { transition: none; }
+      #later-blocks, .tuned.lens #translator, #translator { transition: none; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M0 0 L9 4 L0 8 Z" fill="#b8c7d6"/>
+    </marker>
+    <g id="add">
+      <circle class="merge" r="9"/>
+      <path class="plus" d="M-3.5 0 H3.5 M0 -3.5 V3.5"/>
+    </g>
+    <g id="block">
+      <!-- The vertical stream runs up through the attention and MLP additions. -->
+      <path class="wire" d="M230 0 V-162"/>
+      <path class="wire arrow" d="M230 -14 H56 Q48 -14 48 -22 V-32"/>
+      <path class="wire arrow" d="M110 -14 V-32"/>
+      <path class="wire arrow" d="M172 -14 V-32"/>
+      <path class="wire" d="M110 -58 V-73 M172 -58 V-73"/>
+      <path class="wire arrow" d="M48 -58 V-65 Q48 -73 56 -73 H221"/>
+      <path class="wire arrow" d="M230 -93 H118 Q110 -93 110 -101 V-107"/>
+      <path class="wire arrow" d="M110 -133 V-136 Q110 -144 118 -144 H221"/>
+      <rect class="node attention" x="22" y="-58" width="52" height="26" rx="4"/>
+      <rect class="node attention" x="84" y="-58" width="52" height="26" rx="4"/>
+      <rect class="node attention" x="146" y="-58" width="52" height="26" rx="4"/>
+      <rect class="node mlp" x="22" y="-133" width="176" height="26" rx="4"/>
+      <text class="label" x="48" y="-45" dy="4.7">h<tspan font-size="12" dy="3">0</tspan></text>
+      <text class="label" x="110" y="-45" dy="4.7">h<tspan font-size="12" dy="3">1</tspan></text>
+      <text class="label" x="172" y="-45" dy="0.75">…</text>
+      <text class="label strong" x="110" y="-120" dy="6.25">MLP</text>
+      <use href="#add" x="230" y="-73"/>
+      <use href="#add" x="230" y="-144"/>
+    </g>
+  </defs>
+
+  <rect y="40" width="436" height="714" fill="#121212"/>
+  <g id="diagram" aria-hidden="true">
+    <g id="later-blocks">
+      <use href="#block" y="306"/>
+      <use href="#block" y="468"/>
+    </g>
+    <use href="#block" y="630"/>
+    <g id="omitted-blocks">
+      <path class="wire" d="M230 468 V458 M230 430 V420"/>
+      <circle cx="230" cy="451" r="1.6"/>
+      <circle cx="230" cy="444" r="1.6"/>
+      <circle cx="230" cy="437" r="1.6"/>
+    </g>
+    <path class="brace" d="M322 474 H329 V542 Q329 549 336 549 Q329 549 329 556 V624 H322"/>
+    <text class="note" x="344" y="544">one residual<tspan x="344" dy="19">block</tspan></text>
+    <path class="brace" d="M244 551 H251 V578 Q251 585 258 585 Q251 585 251 592 V619 H244"/>
+    <text class="note" x="264" y="580">attention<tspan x="264" dy="19">block</tspan></text>
+    <path class="brace" d="M35 553 V572"/>
+    <text class="note" x="10" y="548">attention head</text>
+    <path class="wire arrow" d="M230 668 V630"/>
+    <path class="wire arrow" d="M230 716 V695"/>
+    <text class="note" x="250" y="652">residual stream</text>
+    <rect class="node projection" x="171" y="668" width="118" height="27" rx="4"/>
+    <rect class="node" x="171" y="716" width="118" height="27" rx="4"/>
+    <text class="label strong" x="230" y="681.5" dy="6.15">embed</text>
+    <text class="label" x="230" y="729.5" dy="6.15">tokens</text>
+    <g id="output">
+      <path class="wire arrow" d="M230 144 V119"/>
+      <path class="wire arrow" d="M230 93 V78"/>
+      <rect class="node projection" x="171" y="93" width="118" height="26" rx="4"/>
+      <rect class="node" x="171" y="52" width="118" height="26" rx="4"/>
+      <text class="label strong" x="230" y="106" dy="6.15">unembed</text>
+      <text class="label" x="230" y="65" dy="4.4">logits</text>
+    </g>
+    <g id="translator">
+      <path class="wire arrow" d="M230 468 V422"/>
+      <rect class="node projection" x="145" y="388" width="170" height="34" rx="4"/>
+      <text class="label strong" x="230" y="405" dy="6.15">affine translator</text>
+    </g>
+    <circle id="readout-point" cx="230" cy="468" r="3.5" fill="#4dabf7"/>
+  </g>
+  <script><![CDATA[
+    const diagram = document.documentElement;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("view") === "recap") {
+      document.getElementById("diagram-title").textContent = "Transformer architecture";
+      document.getElementById("diagram-description").textContent =
+        "Read from bottom to top. Token embeddings enter the residual stream. The illustrated transformer block adds attention outputs and then the MLP output. The ellipsis represents additional blocks before unembedding converts the final residual stream to logits.";
+      diagram.setAttribute("viewBox", "0 316 436 438");
+      diagram.classList.add("recap");
+    } else {
+      if (params.get("lens") === "tuned") {
+        document.getElementById("diagram-title").textContent = "Transformer residual stream and tuned lens";
+        document.getElementById("diagram-description").textContent =
+          "Read from bottom to top. In the full transformer view, token embeddings pass through three transformer blocks before unembedding produces logits. In the tuned lens view, a learned affine translator takes the output of the first block and passes it to the same unembedding.";
+        diagram.classList.add("tuned", "lens");
+      }
+
+      window.addEventListener("message", (event) => {
+        const view = event.data?.residualStreamView;
+        if (event.source === window.parent && (view === "full" || view === "lens")) {
+          diagram.classList.toggle("lens", view === "lens");
+        }
+      });
+    }
+  ]]></script>
+</svg>

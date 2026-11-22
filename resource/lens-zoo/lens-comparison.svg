@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 436 448"
+     role="group" aria-labelledby="diagram-title" aria-describedby="diagram-description">
+  <title id="diagram-title">Transformer lens comparison</title>
+  <desc id="diagram-description">Read the residual stream from bottom to top. The K-lens uses the mean Jacobian from the embeddings to the intermediate residual at layer l. The J-lens uses the mean Jacobian from that intermediate residual to the final residual.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-bold.otf") format("opentype");
+      font-weight: 700;
+    }
+    text { fill: #e0e0e0; font: 18px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .strong { font-weight: 700; }
+    .state { fill: #b8c7d6; font-size: 16px; font-style: italic; }
+    .start { text-anchor: start; }
+    .end { text-anchor: end; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .projection, .jacobian-node { fill: #203548; stroke: #4dabf7; }
+    .relp-node { fill: #30243d; stroke: #ba9cdd; }
+    a:is(:hover, :focus-visible) .node { stroke: #e0e0e0; stroke-width: 2.6; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .arrow { marker-end: url(#arrow); }
+    .jacobian, #full:not(:target) ~ g .connector { stroke: #4dabf7; }
+    #full:not(:target) ~ g .connector.arrow { marker-end: url(#jacobian-arrow); }
+    .relp { stroke: #ba9cdd; }
+    .bypass { stroke-dasharray: 5 5; }
+    .full-only { display: none; }
+    #full:target ~ .full-only { display: inline; }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="jacobian-arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#4dabf7"/>
+    </marker>
+    <rect id="stream-node" x="162" width="112" height="28" rx="4"/>
+    <rect id="lens-node" x="-30" y="-14" width="60" height="28" rx="4"/>
+  </defs>
+
+  <rect width="436" height="448" fill="#121212"/>
+  <g id="full"/>
+  <g class="full-only" role="group" aria-labelledby="full-title full-description">
+    <title id="full-title">Logit, R- and S-lens correspondence</title>
+    <desc id="full-description">The logit lens bypasses the later blocks and reads the intermediate residual directly through the unembedding. The S-lens is the K-lens with RelP derivatives, and the R-lens is the J-lens with RelP derivatives.</desc>
+    <path class="wire arrow bypass" d="M218 196 L200 184 H88 Q78 184 78 174 V92 Q78 82 88 82 H162"/>
+    <a href="../../posts/lens-zoo.html#logit-lens" target="_parent" aria-label="Logit lens">
+      <rect class="node" x="30" y="119" width="96" height="28" rx="4"/>
+      <text x="78" y="139">logit lens</text>
+    </a>
+
+    <path class="wire relp" d="M124 328 H52 Q42 328 42 318 V206 Q42 196 52 196 H124"/>
+    <a href="../../posts/lens-zoo.html#s-lens" target="_parent" aria-label="S-lens">
+      <use class="node relp-node" href="#lens-node" x="42" y="262"/>
+      <text x="42" y="268">s-lens</text>
+    </a>
+
+    <path class="wire relp" d="M312 196 H384 Q394 196 394 186 V130 Q394 120 384 120 H312"/>
+    <a href="../../posts/lens-zoo.html#r-lens" target="_parent" aria-label="R-lens">
+      <use class="node relp-node" href="#lens-node" x="394" y="158"/>
+      <text x="394" y="164">r-lens</text>
+    </a>
+  </g>
+
+  <g>
+    <path class="wire connector" d="M218 328 H124"/>
+    <path class="wire jacobian" d="M124 328 Q114 328 114 318 V206 Q114 196 124 196"/>
+    <path class="wire connector arrow" d="M124 196 H215"/>
+    <a href="../../posts/lens-zoo.html#k-lens" target="_parent" aria-label="K-lens">
+      <use class="node jacobian-node" href="#lens-node" x="114" y="262"/>
+      <text x="114" y="268">k-lens</text>
+    </a>
+
+    <path class="wire connector" d="M218 196 H312"/>
+    <path class="wire jacobian" d="M312 196 Q322 196 322 186 V130 Q322 120 312 120"/>
+    <path class="wire connector arrow" d="M312 120 H221"/>
+    <a href="../../posts/lens-zoo.html#j-lens" target="_parent" aria-label="J-lens">
+      <use class="node jacobian-node" href="#lens-node" x="322" y="158"/>
+      <text x="322" y="164">j-lens</text>
+    </a>
+  </g>
+
+  <g aria-hidden="true">
+    <path class="wire arrow" d="M218 404 V380"/>
+    <path class="wire arrow" d="M218 352 V304"/>
+    <path class="wire arrow" d="M218 276 V248"/>
+    <path class="wire arrow" d="M218 220 V172"/>
+    <path class="wire arrow" d="M218 144 V96"/>
+    <path class="wire arrow" d="M218 68 V44"/>
+
+    <use class="node" href="#stream-node" y="404"/>
+    <text x="218" y="424">tokens</text>
+    <use class="node projection" href="#stream-node" y="352"/>
+    <text class="strong" x="218" y="372">embed</text>
+    <use class="node" href="#stream-node" y="276"/>
+    <text x="218" y="296">earlier blocks</text>
+    <use class="node" href="#stream-node" y="220"/>
+    <text class="strong" x="218" y="240">layer <tspan font-style="italic">l</tspan></text>
+    <use class="node" href="#stream-node" y="144"/>
+    <text x="218" y="164">later blocks</text>
+    <use class="node projection" href="#stream-node" y="68"/>
+    <text class="strong" x="218" y="88">unembed</text>
+    <use class="node" href="#stream-node" y="16"/>
+    <text x="218" y="36">logits</text>
+
+    <g fill="#b8c7d6">
+      <circle cx="218" cy="328" r="3"/>
+      <circle cx="218" cy="196" r="3"/>
+      <circle cx="218" cy="120" r="3"/>
+    </g>
+    <text class="state start" x="228" y="333">h<tspan dy="3" font-size="11">0</tspan></text>
+    <text class="state start" x="228" y="186">h<tspan dy="3" font-size="11">l</tspan></text>
+    <text class="state end" x="208" y="122">h<tspan dy="3" font-size="11">L</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,2 @@
+Unless explicitly asked, assume TODO comments are for humans to complete and NOT for you, the LLM, to action.
+DO NOT under any circumstances change any prose in ./content/posts/ unless explicitly asked to do so, even if the prose contains typos or grammatical errors!

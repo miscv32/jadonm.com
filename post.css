@@ -1,3 +1,14 @@
+@import url("./figure-motion.css");
+
+@font-face {
+    font-family: "Latin Modern Math";
+    src: local("Latin Modern Math"),
+         local("LatinModernMath-Regular"),
+         url("https://fred-wang.github.io/MathFonts/LatinModern/latinmodern-math.woff2") format("woff2"),
+         url("https://fred-wang.github.io/MathFonts/LatinModern/latinmodern-math.woff") format("woff");
+    font-display: swap;
+}
+
 /* The site shell comes from index.css; keep additions scoped to articles. */
 body.post {
     height: auto;
@@ -17,15 +28,56 @@ body.post {
 
 .post article { line-height: 1.55; }
 
+.post math {
+    font-family: "Latin Modern Math", math;
+}
+
 .post article > p,
 .post article section p {
     text-align: justify;
 }
 
+.post .math-paragraph-break::before {
+    content: "\A";
+    white-space: pre;
+}
+
+.post mo.math-opening-parenthesis {
+    margin-inline: -0.08em -0.12em;
+}
+
+.post mo.math-closing-parenthesis {
+    margin-inline: -0.12em -0.08em;
+}
+
+.post mo.math-opening-bar {
+    margin-inline-end: 0.09em;
+}
+
+.post mo.math-closing-bar {
+    margin-inline-start: 0.09em;
+}
+
+.post article dt { color: #888; }
+.post article dd { margin-inline-start: 1em; }
+
 .article-header h1 {
     font-size: clamp(1.6rem, 5vw, 2.3rem);
     line-height: 1.25;
     overflow-wrap: anywhere;
+}
+
+.post-layout-controls:not([hidden]) {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-block: 1rem;
+    font-size: 0.9rem;
+    color-scheme: dark;
+}
+
+.post-layout-controls select {
+    font: inherit;
 }
 
 .post article h2, .post article h3, .post article h4 {
@@ -38,6 +90,23 @@ body.post {
 .post #TOC { margin: 2rem 0; }
 .post #TOC h2 { font-size: 1.1rem; }
 .post #TOC ul { padding-left: 1.4rem; }
+
+.post article details.dropdown {
+    margin: 1em 0;
+    padding: 0.6em 0.8em;
+    border: 1px solid #555;
+    background: #191919;
+}
+
+.post article details.dropdown > summary {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.post article details.dropdown > summary:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
 
 .post code {
     font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
@@ -74,17 +143,195 @@ body.post {
 }
 
 .post img, .post svg { max-width: 100%; height: auto; }
+.post .table-scroll {
+    margin: 1em 0;
+    overflow-x: auto;
+}
+
+.post .table-scroll:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.post article section .figure-pane-toggle {
+    color: #888;
+    text-align: left;
+}
+
+.post .figure-pane-toggle button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.post .figure-pane-toggle button:hover,
+.post .figure-pane-toggle button[aria-pressed="true"] {
+    color: #e0e0e0;
+}
+
+.post .figure-pane-toggle button[aria-pressed="true"] {
+    font-weight: 700;
+}
+
+.post .figure-pane-toggle button:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 2px;
+}
+
+.lens-diagram {
+    --diagram-fit-width: 436;
+    --diagram-fit-height: 714;
+    --diagram-height: var(--diagram-fit-height);
+    --diagram-resize-duration: var(--figure-move);
+    --diagram-resize-delay: var(--figure-grow-delay);
+    position: relative;
+    max-width: 458px;
+    margin: 1em auto;
+}
+
+.lens-diagram::before {
+    content: "";
+    display: block;
+    padding-bottom: calc(100% * var(--diagram-height) / var(--diagram-fit-width));
+}
+
+.architecture-recap-figure {
+    --diagram-fit-height: 438;
+}
+
+.lens-comparison-figure {
+    --diagram-fit-height: 448;
+}
+
+.coda-lens-figure {
+    --diagram-fit-width: 424;
+    --diagram-fit-height: 324;
+    max-width: 424px;
+}
+
+.future-lens-figure {
+    --diagram-fit-width: 540;
+    --diagram-fit-height: 336;
+    max-width: 540px;
+}
+
+@media (max-width: 36rem) {
+    .future-lens-figure {
+        --diagram-fit-width: 288;
+        --diagram-fit-height: 674;
+        max-width: 340px;
+    }
+}
+
+.figure-pane-toolbar:has([data-slide="lens"][aria-pressed="true"]) + .logit-lens-figure {
+    --diagram-height: 390;
+}
+
+.figure-pane-toolbar:has([data-slide="lens"][aria-pressed="true"]) + .tuned-lens-figure {
+    --diagram-height: 470;
+}
+
+.figure-pane-toolbar:has([data-slide="lens"][aria-pressed="true"]) + .lens-diagram {
+    --diagram-resize-delay: var(--figure-shrink-delay);
+}
+
+.j-lens-figure {
+    --diagram-fit-height: 584;
+    --diagram-resize-duration: 0ms;
+    --diagram-resize-delay: 0ms;
+}
+
+.j-lens-figure:has(> iframe:is([src*="#average-"], [src$="#average"])) {
+    --diagram-height: 551;
+}
+
+.lens-diagram > iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .lens-diagram::before {
+        transition: padding-bottom var(--diagram-resize-duration) var(--figure-move-ease) var(--diagram-resize-delay);
+    }
+}
+
+.figure-pane-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    min-height: 2rem;
+}
+
+.figure-pane-toolbar + .lens-diagram {
+    margin-top: 0.5rem;
+}
+
+.figure-pane-toolbar .figure-pane-toggle {
+    margin: 0;
+}
+
+.j-lens-steps:not([hidden]) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.65rem;
+    margin-inline-start: auto;
+    font-variant-numeric: tabular-nums;
+}
+
+.j-lens-steps button {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.j-lens-steps button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.j-lens-steps button:not(:disabled):hover {
+    color: #fff;
+}
+
+.j-lens-steps button:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 2px;
+}
+
+.j-lens-steps svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 .post table {
     width: 100%;
-    max-width: 100%;
-    table-layout: fixed;
-    margin: 1em 0;
     border-collapse: collapse;
     line-height: 1.4;
 }
 
+.post table a { overflow-wrap: normal; }
+
 .post th, .post td {
-    overflow-wrap: anywhere;
     padding: 0.25rem 0.45rem;
     border: 1px solid #555;
     vertical-align: top;
@@ -98,3 +345,91 @@ body.post {
 .post td { background: #191919; }
 .post caption { text-align: left; margin-bottom: 0.6rem; color: #888; }
 .post blockquote { margin-left: 0; padding-left: 1rem; border-left: 2px solid #888; }
+
+@media (min-width: 72rem) and (min-height: 31rem) {
+    .post-margins {
+        --post-note-width: clamp(11rem, 16vw, 15rem);
+        --post-figure-width: calc(100% - var(--post-rail-left) - 1rem);
+        --post-gap: 2rem;
+        position: relative;
+    }
+
+    .post .margin-figure-anchor:not([hidden]) { display: block; }
+
+    .post-rail-figures .margin-figure,
+    .post-rail-figures .margin-figure-controls {
+        position: fixed;
+        left: var(--post-rail-left);
+        width: var(--post-figure-width);
+        box-sizing: border-box;
+        margin: 0;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity var(--figure-fade) var(--figure-fade-ease),
+                    visibility 0s linear var(--figure-fade);
+    }
+
+    .post-rail-figures .margin-figure {
+        inset-block: 1rem 5rem;
+        max-width: var(--post-figure-width);
+        height: max-content;
+        max-height: calc(100dvh - 6rem);
+        overflow: auto;
+        margin-block: auto;
+    }
+
+    .post-rail-figures .margin-figure:where(figure, p) { text-align: center; }
+    .post-rail-figures .margin-figure :is(img, svg):not([aria-hidden="true"]) {
+        max-height: calc(100dvh - 6rem);
+    }
+
+    .post-rail-figures .margin-figure.lens-diagram {
+        right: 1rem;
+        width: min(var(--post-figure-width), calc((100dvh - 6rem) * var(--diagram-fit-width) / var(--diagram-fit-height)));
+        margin-inline: auto;
+    }
+
+    .post-rail-figures .margin-figure-controls {
+        bottom: 1rem;
+        min-height: 2rem;
+        padding-block: 0.25rem;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .post-rail-figures .margin-figure-active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition-delay: var(--figure-fade);
+    }
+
+    .post .margin-notes {
+        position: absolute;
+        top: 0;
+        right: calc(100% + var(--post-gap));
+        width: var(--post-note-width);
+        max-width: calc(var(--post-text-left) - var(--post-gap) - 1rem);
+        color: #aaa;
+        font-size: 0.9rem;
+        overflow-wrap: anywhere;
+    }
+
+    .post .margin-notes > hr { display: none; }
+    .post .margin-notes > ol { margin: 0; padding: 0; }
+    .post .margin-notes > ol > li {
+        position: absolute;
+        inset-inline: 1.25rem 0;
+        scroll-margin-top: 1rem;
+    }
+
+    .post .margin-notes li p { margin: 0; text-align: left; }
+    .post .margin-notes li p + p { margin-top: 0.5em; }
+    .post .margin-notes li:target { color: #e0e0e0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .post .margin-figure,
+    .post .margin-figure-controls { transition: none; }
+}

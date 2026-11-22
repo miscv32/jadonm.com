@@ -10,9 +10,9 @@ all: index.html $(POSTS)
 index.html: templates/index.html log.json scripts/site.py
 	$(PYTHON) scripts/site.py build-home --pandoc "$(PANDOC)"
 
-posts/%.html: content/posts/%.md templates/post.html
+posts/%.html: content/posts/%.md templates/post.html templates/dropdown.lua templates/table.lua
 	@mkdir -p posts
-	$(PANDOC) --from=markdown --to=html5 --standalone --template=templates/post.html --toc --toc-depth=3 --section-divs --mathml --highlight-style=zenburn --output=$@ $<
+	$(PANDOC) --from=markdown --to=html5 --standalone --template=templates/post.html --lua-filter=templates/dropdown.lua --lua-filter=templates/table.lua --toc --toc-depth=3 --section-divs --mathml --highlight-style=zenburn --output=$@ $<
 
 # Arguments are passed through the environment, so Markdown/shell characters
 # in TEXT are not interpolated into a shell command by the recipe.

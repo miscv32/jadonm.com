@@ -1,0 +1,172 @@
+<?xml-stylesheet type="text/css" href="../../figure-motion.css"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" role="img"
+     aria-labelledby="future-lens-title" aria-describedby="future-lens-description">
+  <title id="future-lens-title">Future Lens: prediction, patching, and prompt training</title>
+  <desc id="future-lens-description">Read each transformer stream from bottom to top. Dashed arrows from the earlier and later blocks show attention to individual prior tokens. The source run processes “I live in” and predicts “New”. A blue arrow copies the layer l activation from “in” into the patched run, replacing the last token's activation. With “Put it on” as the other context, the patched run might still predict “the”. In the training pane, a shared soft prompt replaces that context, the source-token loss updates the prompt, and the transformer stays frozen. The faded attention arrows illustrate weaker token-specific influence from the prompt.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-bold.otf") format("opentype");
+      font-weight: 700;
+    }
+    text { fill: #e0e0e0; font: 16px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .note { fill: #b8c7d6; font-size: 14px; }
+    .math { font-style: italic; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .activation { fill: #203548; stroke: #4dabf7; }
+    .prompt, .loss { fill: #30243d; stroke: #ba9cdd; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .flow { marker-end: url(#arrow); }
+    .attention { stroke-dasharray: 4 4; marker-end: url(#attention-head); }
+    .muted { opacity: 0.36; }
+    .transfer { stroke: #4dabf7; marker-end: url(#transfer-head); }
+    .transfer-note { fill: #91ccff; }
+    .bridge { stroke: #121212; stroke-width: 8; }
+    .update { stroke: #ba9cdd; marker-end: url(#update-head); }
+    .prompt-note { fill: #d2bce9; }
+    .narrow, .training-only, #train:target ~ svg .patch-only { display: none; }
+    #train:target ~ svg .training-only { display: inline; }
+    @media (max-aspect-ratio: 1/1) {
+      .wide { display: none; }
+      .narrow { display: inline; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .patch-only, .training-only { animation: fade-in var(--figure-fade) var(--figure-fade-ease) both; }
+    }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="attention-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="7" markerHeight="7"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="transfer-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#4dabf7"/>
+    </marker>
+    <marker id="update-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#ba9cdd"/>
+    </marker>
+
+    <rect id="block" x="116" width="116" height="28" rx="4"/>
+    <g id="transformer">
+      <path class="wire flow" d="M174 275 V249"/>
+      <path class="wire flow" d="M174 130 V107"/>
+      <use class="node" href="#block" y="221"/>
+      <text x="174" y="240">earlier blocks</text>
+      <use class="node" href="#block" y="130"/>
+      <text x="174" y="149">later blocks</text>
+    </g>
+    <g id="earlier-attention">
+      <path class="wire attention" d="M116 228 C81 228 44 244 44 275"/>
+      <path class="wire attention" d="M116 241 C101 241 91 253 91 275"/>
+    </g>
+    <g id="later-attention">
+      <path class="wire attention" d="M116 138 C29 138 30 221 30 275"/>
+      <path class="wire attention" d="M116 150 C64 150 77 227 77 275"/>
+    </g>
+    <g id="activation">
+      <rect class="node activation" x="130" y="176" width="88" height="26" rx="4"/>
+      <text class="math" x="174" y="194">h<tspan dy="3" font-size="11">l</tspan><tspan dy="-3">(C</tspan><tspan dy="3" font-size="11">1</tspan><tspan dy="-3">)</tspan></text>
+    </g>
+
+    <g id="source-run">
+      <use href="#earlier-attention"/>
+      <use href="#later-attention"/>
+      <use href="#transformer"/>
+      <path class="wire flow" d="M174 221 V202"/>
+      <path class="wire flow" d="M174 176 V158"/>
+      <use href="#activation"/>
+      <use class="node" href="#block" y="79"/>
+      <text x="174" y="98">“New”</text>
+
+      <rect class="node" x="22" y="275" width="30" height="28" rx="4"/>
+      <rect class="node" x="61" y="275" width="46" height="28" rx="4"/>
+      <rect class="node activation" x="153" y="275" width="42" height="28" rx="4"/>
+      <text x="37" y="294">I</text>
+      <text x="84" y="294">live</text>
+      <text x="174" y="294">in</text>
+      <text class="note" x="108" y="322">source context, <tspan class="math">C</tspan><tspan dy="3" font-size="10">1</tspan></text>
+    </g>
+    <g id="patched-run">
+      <use href="#earlier-attention"/>
+      <use href="#transformer"/>
+      <path class="wire" d="M174 221 V210 M169 210 H179"/>
+      <path class="wire transfer" d="M174 176 V158"/>
+      <use href="#activation"/>
+      <use class="node" href="#block" y="79"/>
+    </g>
+    <g id="other-context">
+      <use href="#later-attention"/>
+      <text class="note" x="174" y="72">possible prediction</text>
+      <text x="174" y="98">“the”</text>
+      <rect class="node" x="19" y="275" width="40" height="28" rx="4"/>
+      <rect class="node" x="68" y="275" width="36" height="28" rx="4"/>
+      <rect class="node" x="154" y="275" width="40" height="28" rx="4"/>
+      <text x="39" y="294">Put</text>
+      <text x="86" y="294">it</text>
+      <text x="174" y="294">on</text>
+      <text class="note" x="108" y="322">other context, <tspan class="math">C</tspan><tspan dy="3" font-size="10">2</tspan></text>
+    </g>
+    <g id="soft-prompt">
+      <use class="muted" href="#later-attention"/>
+      <text x="174" y="98">readout</text>
+      <path class="wire flow" d="M174 79 V67"/>
+      <rect class="node loss" x="107" y="33" width="134" height="34" rx="4"/>
+      <text x="174" y="48">−log <tspan class="math">p</tspan>(“New”)</text>
+      <text class="note" x="174" y="62">source-token loss</text>
+      <path class="wire update" d="M241 50 H245 Q253 50 253 58 V311 Q253 319 245 319 H199"/>
+      <text class="note prompt-note" transform="translate(268 108) rotate(-90)">update θ</text>
+
+      <rect class="node prompt" x="16" y="275" width="35" height="28" rx="4"/>
+      <rect class="node prompt" x="66" y="275" width="47" height="28" rx="4"/>
+      <rect class="node prompt" x="153" y="275" width="42" height="28" rx="4"/>
+      <text class="math" x="33" y="294">p<tspan dy="3" font-size="11">1</tspan></text>
+      <text class="note" x="58.5" y="294">…</text>
+      <text class="math" x="89.5" y="294">p<tspan dy="3" font-size="11">m−1</tspan></text>
+      <text class="math" x="174" y="294">p<tspan dy="3" font-size="11">m</tspan></text>
+      <text class="note prompt-note" x="108" y="322">shared soft prompt, <tspan class="math">P</tspan><tspan dy="3" font-size="10">θ</tspan></text>
+    </g>
+
+    <path id="wide-transfer" d="M218 189 H388"/>
+    <path id="narrow-transfer" d="M218 189 H270 Q278 189 278 197 V519 Q278 527 270 527 H218"/>
+  </defs>
+
+  <g id="predict"/>
+  <g id="train"/>
+  <rect width="100%" height="100%" fill="#121212"/>
+  <svg class="wide" width="100%" height="100%" viewBox="0 0 540 336" aria-hidden="true">
+    <use href="#source-run"/>
+    <use href="#patched-run" x="258"/>
+    <g class="patch-only"><use href="#other-context" x="258"/></g>
+    <g class="training-only"><use href="#soft-prompt" x="258"/></g>
+    <use class="wire bridge" href="#wide-transfer"/>
+    <use class="wire transfer" href="#wide-transfer"/>
+    <text class="note transfer-note" x="272" y="180">patch</text>
+  </svg>
+  <svg class="narrow" width="100%" height="100%" viewBox="0 0 288 674" aria-hidden="true">
+    <use href="#source-run"/>
+    <use href="#patched-run" y="338"/>
+    <g class="patch-only"><use href="#other-context" y="338"/></g>
+    <g class="training-only"><use href="#soft-prompt" y="338"/></g>
+    <use class="wire bridge" href="#narrow-transfer"/>
+    <use class="wire transfer" href="#narrow-transfer"/>
+    <text class="note transfer-note" transform="translate(268 347) rotate(-90)">patch</text>
+  </svg>
+</svg>
