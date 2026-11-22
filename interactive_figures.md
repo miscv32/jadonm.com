@@ -7,6 +7,7 @@
 - Give related panes consistent spacing around visible content and controls. Fit the frame to its contents, allow the page to reflow, and keep the drawing's scale stable as the frame changes size.
 - Keep controls in the page HTML so they can align with the surrounding text and adapt to narrow screens. Use recognisable controls with accessible names, keyboard support, visible focus, and clear selected or disabled states. Give the figure a title and an accessible description of the information it conveys.
 - Put each SVG in a standalone element or a figure. Put its controls in the preceding element and mark that element with `data-figure-controls`. The post template places both in the right margin on wide screens and keeps them inline on small screens. Use `data-post-figure` to mark a custom figure wrapper.
+- Reuse `js/figure-panes.js` and the `figure-pane-toolbar` markup in `lens-zoo.md` for named panes. Load the script once per page. Give each button a `data-slide` matching its SVG fragment and point `aria-controls` at the iframe. Use sentence case and middle dots (`·`) in the control. If the figure switches panes by receiving a message, set `data-figure-message` on the button group to the message key.
 
 ## transitions
 

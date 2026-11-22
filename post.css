@@ -1,5 +1,14 @@
 @import url("./figure-motion.css");
 
+@font-face {
+    font-family: "Latin Modern Math";
+    src: local("Latin Modern Math"),
+         local("LatinModernMath-Regular"),
+         url("https://fred-wang.github.io/MathFonts/LatinModern/latinmodern-math.woff2") format("woff2"),
+         url("https://fred-wang.github.io/MathFonts/LatinModern/latinmodern-math.woff") format("woff");
+    font-display: swap;
+}
+
 /* The site shell comes from index.css; keep additions scoped to articles. */
 body.post {
     height: auto;
@@ -19,9 +28,34 @@ body.post {
 
 .post article { line-height: 1.55; }
 
+.post math {
+    font-family: "Latin Modern Math", math;
+}
+
 .post article > p,
 .post article section p {
     text-align: justify;
+}
+
+.post .math-paragraph-break::before {
+    content: "\A";
+    white-space: pre;
+}
+
+.post mo.math-opening-parenthesis {
+    margin-inline: -0.08em -0.12em;
+}
+
+.post mo.math-closing-parenthesis {
+    margin-inline: -0.12em -0.08em;
+}
+
+.post mo.math-opening-bar {
+    margin-inline-end: 0.09em;
+}
+
+.post mo.math-closing-bar {
+    margin-inline-start: 0.09em;
 }
 
 .post article dt { color: #888; }
@@ -31,6 +65,19 @@ body.post {
     font-size: clamp(1.6rem, 5vw, 2.3rem);
     line-height: 1.25;
     overflow-wrap: anywhere;
+}
+
+.post-layout-controls:not([hidden]) {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-block: 1rem;
+    font-size: 0.9rem;
+    color-scheme: dark;
+}
+
+.post-layout-controls select {
+    font: inherit;
 }
 
 .post article h2, .post article h3, .post article h4 {
@@ -106,12 +153,12 @@ body.post {
     outline-offset: 2px;
 }
 
-.post article section .residual-stream-toggle {
+.post article section .figure-pane-toggle {
     color: #888;
     text-align: left;
 }
 
-.post .residual-stream-toggle button {
+.post .figure-pane-toggle button {
     padding: 0;
     border: 0;
     background: none;
@@ -120,21 +167,22 @@ body.post {
     cursor: pointer;
 }
 
-.post .residual-stream-toggle button:hover,
-.post .residual-stream-toggle button[aria-pressed="true"] {
+.post .figure-pane-toggle button:hover,
+.post .figure-pane-toggle button[aria-pressed="true"] {
     color: #e0e0e0;
 }
 
-.post .residual-stream-toggle button[aria-pressed="true"] {
+.post .figure-pane-toggle button[aria-pressed="true"] {
     font-weight: 700;
 }
 
-.post .residual-stream-toggle button:focus-visible {
+.post .figure-pane-toggle button:focus-visible {
     outline: 1px solid currentColor;
     outline-offset: 2px;
 }
 
 .lens-diagram {
+    --diagram-fit-width: 436;
     --diagram-fit-height: 714;
     --diagram-height: var(--diagram-fit-height);
     --diagram-resize-duration: var(--figure-move);
@@ -147,22 +195,46 @@ body.post {
 .lens-diagram::before {
     content: "";
     display: block;
-    padding-bottom: calc(100% * var(--diagram-height) / 436);
+    padding-bottom: calc(100% * var(--diagram-height) / var(--diagram-fit-width));
 }
 
 .architecture-recap-figure {
     --diagram-fit-height: 438;
 }
 
-.lens-diagram-switch:has([data-lens-view][aria-pressed="true"]) + .logit-lens-figure {
+.lens-comparison-figure {
+    --diagram-fit-height: 448;
+}
+
+.coda-lens-figure {
+    --diagram-fit-width: 424;
+    --diagram-fit-height: 324;
+    max-width: 424px;
+}
+
+.future-lens-figure {
+    --diagram-fit-width: 540;
+    --diagram-fit-height: 336;
+    max-width: 540px;
+}
+
+@media (max-width: 36rem) {
+    .future-lens-figure {
+        --diagram-fit-width: 288;
+        --diagram-fit-height: 674;
+        max-width: 340px;
+    }
+}
+
+.figure-pane-toolbar:has([data-slide="lens"][aria-pressed="true"]) + .logit-lens-figure {
     --diagram-height: 390;
 }
 
-.lens-diagram-switch:has([data-lens-view][aria-pressed="true"]) + .tuned-lens-figure {
+.figure-pane-toolbar:has([data-slide="lens"][aria-pressed="true"]) + .tuned-lens-figure {
     --diagram-height: 470;
 }
 
-.lens-diagram-switch:has([data-lens-view][aria-pressed="true"]) + .lens-diagram {
+.figure-pane-toolbar:has([data-slide="lens"][aria-pressed="true"]) + .lens-diagram {
     --diagram-resize-delay: var(--figure-shrink-delay);
 }
 
@@ -190,8 +262,7 @@ body.post {
     }
 }
 
-.lens-diagram-switch,
-.j-lens-toolbar {
+.figure-pane-toolbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -199,16 +270,11 @@ body.post {
     min-height: 2rem;
 }
 
-.lens-diagram-switch {
-    column-gap: 0.35em;
-    margin-bottom: 0;
-}
-
-:is(.lens-diagram-switch, .j-lens-toolbar) + .lens-diagram {
+.figure-pane-toolbar + .lens-diagram {
     margin-top: 0.5rem;
 }
 
-.j-lens-toolbar .residual-stream-toggle {
+.figure-pane-toolbar .figure-pane-toggle {
     margin: 0;
 }
 
@@ -290,8 +356,8 @@ body.post {
 
     .post .margin-figure-anchor:not([hidden]) { display: block; }
 
-    .post .margin-figure,
-    .post .margin-figure-controls {
+    .post-rail-figures .margin-figure,
+    .post-rail-figures .margin-figure-controls {
         position: fixed;
         left: var(--post-rail-left);
         width: var(--post-figure-width);
@@ -304,7 +370,7 @@ body.post {
                     visibility 0s linear var(--figure-fade);
     }
 
-    .post .margin-figure {
+    .post-rail-figures .margin-figure {
         inset-block: 1rem 5rem;
         max-width: var(--post-figure-width);
         height: max-content;
@@ -313,18 +379,18 @@ body.post {
         margin-block: auto;
     }
 
-    .post .margin-figure:where(figure, p) { text-align: center; }
-    .post .margin-figure :is(img, svg):not([aria-hidden="true"]) {
+    .post-rail-figures .margin-figure:where(figure, p) { text-align: center; }
+    .post-rail-figures .margin-figure :is(img, svg):not([aria-hidden="true"]) {
         max-height: calc(100dvh - 6rem);
     }
 
-    .post .margin-figure.lens-diagram {
+    .post-rail-figures .margin-figure.lens-diagram {
         right: 1rem;
-        width: min(var(--post-figure-width), calc((100dvh - 6rem) * 436 / var(--diagram-fit-height)));
+        width: min(var(--post-figure-width), calc((100dvh - 6rem) * var(--diagram-fit-width) / var(--diagram-fit-height)));
         margin-inline: auto;
     }
 
-    .post .margin-figure-controls {
+    .post-rail-figures .margin-figure-controls {
         bottom: 1rem;
         min-height: 2rem;
         padding-block: 0.25rem;
@@ -332,7 +398,7 @@ body.post {
         text-align: left;
     }
 
-    .post .margin-figure-active {
+    .post-rail-figures .margin-figure-active {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;

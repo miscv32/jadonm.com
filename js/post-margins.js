@@ -3,7 +3,7 @@
     if (!article) return;
 
     const wide = matchMedia("(min-width: 72rem) and (min-height: 31rem)");
-    const controlSelector = "[data-figure-controls], .lens-diagram-switch, .j-lens-toolbar";
+    const controlSelector = "[data-figure-controls]";
     const mediaSelector = "svg, img, iframe, object, embed";
 
     function isSvg(element) {
@@ -27,6 +27,7 @@
         }
     }
 
+    const firstSection = article.querySelector("section");
     const sections = new Set();
     const panels = Array.from(figures, (figure, index) => {
         const sibling = figure.previousElementSibling;
@@ -58,16 +59,19 @@
         notes.push({ reference, note });
     }
     // Keep the endnotes together if any lack a reference in the prose.
-    const showNotes = notes.length && notes.length === endnotes.querySelectorAll(":scope > ol > li").length;
-    if (!panels.length && !showNotes) return;
+    const hasSidenotes = notes.length > 0 && notes.length === endnotes.querySelectorAll(":scope > ol > li").length;
+    if (!panels.length && !hasSidenotes) return;
     article.classList.add("post-margins");
-    if (showNotes) endnotes.classList.add("margin-notes");
+
+    const layoutControls = article.querySelector(".post-layout-controls");
+    const figureSelect = layoutControls?.querySelector("select");
 
     let activePanel;
+    let showRailFigures = false;
+    let showSidenotes = false;
     let notePadding = 0;
     let frame = 0;
     let layoutPending = false;
-    const lastSection = panels.at(-1)?.section ?? article;
 
     function setActivePanel(next) {
         if (next === activePanel) return;
@@ -83,11 +87,15 @@
     }
 
     function updatePanels() {
-        const readingLine = window.innerHeight * 0.38;
+        const viewportHeight = window.innerHeight;
+        const readingLine = viewportHeight * 0.38;
+        const inIntroduction = !firstSection || firstSection.getBoundingClientRect().top > readingLine;
         let next;
-        if (lastSection.getBoundingClientRect().bottom > readingLine) {
-            for (const panel of panels) {
-                if (panel.start.getBoundingClientRect().top > readingLine) break;
+        for (const panel of panels) {
+            if (panel.start.getBoundingClientRect().top > readingLine) break;
+            if (!panel.section && !inIntroduction) continue;
+            const { top, bottom } = (panel.section ?? article).getBoundingClientRect();
+            if (bottom > 0 && top < viewportHeight) {
                 next = panel;
             }
         }
@@ -97,8 +105,8 @@
     function layoutMargins() {
         const rect = article.getBoundingClientRect();
         const gap = getComputedStyle(article).getPropertyValue("--post-gap").trim();
-        if (panels.length) article.style.setProperty("--post-rail-left", `calc(${rect.right}px + ${gap})`);
-        if (!showNotes) return;
+        if (showRailFigures) article.style.setProperty("--post-rail-left", `calc(${rect.right}px + ${gap})`);
+        if (!showSidenotes) return;
 
         article.style.setProperty("--post-text-left", `${rect.left}px`);
         let bottom = 0;
@@ -112,43 +120,45 @@
     }
 
     function scheduleUpdate(layout = false) {
-        if (!wide.matches) return;
+        if (!showRailFigures && !showSidenotes) return;
         layoutPending ||= layout;
         if (frame) return;
         frame = requestAnimationFrame(() => {
             frame = 0;
-            if (!wide.matches) return;
-            if (layoutPending) layoutMargins();
+            if (layoutPending && (showRailFigures || showSidenotes)) layoutMargins();
             layoutPending = false;
-            updatePanels();
+            if (showRailFigures) updatePanels();
         });
     }
 
     function updateMode() {
+        showRailFigures = wide.matches && panels.length > 0 && figureSelect?.value === "slideshow";
+        showSidenotes = wide.matches && hasSidenotes;
+        if (layoutControls) layoutControls.hidden = !wide.matches || !panels.length;
+        article.classList.toggle("post-rail-figures", showRailFigures);
+        endnotes?.classList.toggle("margin-notes", showSidenotes);
+
+        if (!showRailFigures) setActivePanel(undefined);
         for (const panel of panels) {
-            panel.marker.hidden = !wide.matches;
+            panel.marker.hidden = !showRailFigures;
             for (const element of panel.elements) {
-                element.inert = wide.matches && panel !== activePanel;
+                element.inert = showRailFigures && panel !== activePanel;
             }
         }
-        if (wide.matches) {
-            scheduleUpdate(true);
-        } else {
-            activePanel = undefined;
-            for (const panel of panels) {
-                for (const element of panel.elements) element.classList.remove("margin-figure-active");
-            }
+        if (!showSidenotes) {
             notePadding = 0;
             article.style.paddingBottom = "";
         }
+        scheduleUpdate(true);
     }
 
+    figureSelect?.addEventListener("change", updateMode);
     wide.addEventListener("change", updateMode);
     window.addEventListener("scroll", () => scheduleUpdate(), { passive: true });
     window.addEventListener("resize", () => scheduleUpdate(true));
     const observer = new ResizeObserver(() => scheduleUpdate(true));
     observer.observe(article);
-    if (showNotes) {
+    if (hasSidenotes) {
         for (const { note } of notes) observer.observe(note);
     }
     updateMode();

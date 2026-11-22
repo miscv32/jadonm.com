@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 424 324"
+     role="img" aria-labelledby="diagram-title" aria-describedby="diagram-description">
+  <title id="diagram-title">Inkling 2 Mini and the Coda Lens after pass 2</title>
+  <desc id="diagram-description">Read both panels from bottom to top. On the left, the prelude feeds into three passes through the same two core blocks, and pass 3 feeds into the coda. On the right, the Coda Lens takes the residual state after pass 2 and feeds it directly into the coda, skipping pass 3. Each dot represents a layer.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    text { fill: #e0e0e0; font: 16px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .pass-label { fill: #b8c7d6; font-size: 14px; }
+    .once { fill: #b8c7d6; }
+    .pass-one { fill: #ba9cdd; }
+    .pass-two { fill: #8197ec; }
+    .pass-three { fill: #4dabf7; }
+    .skipped { opacity: 0.25; }
+    .wire {
+      fill: none;
+      stroke: #8090a3;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      marker-end: url(#arrow);
+    }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#8090a3"/>
+    </marker>
+    <circle id="layer" r="3.4"/>
+    <g id="block">
+      <use href="#layer"/>
+      <use href="#layer" y="9"/>
+      <use href="#layer" y="18"/>
+      <use href="#layer" y="27"/>
+      <use href="#layer" y="36"/>
+      <use href="#layer" y="45"/>
+    </g>
+    <g id="core-pass">
+      <use href="#block"/>
+      <use href="#block" y="66"/>
+    </g>
+    <path id="repeat" d="M62 91 C62 80 84 81 84 99 V203 Q84 222 102 214"/>
+    <g id="shared-architecture">
+      <path class="wire" d="M62 239 V216"/>
+      <use class="wire" href="#repeat"/>
+      <use class="once" href="#block" x="62" y="246"/>
+      <text x="62" y="312">prelude</text>
+      <text x="20" y="157">core</text>
+      <use class="pass-one" href="#core-pass" x="62" y="97"/>
+      <use class="pass-two" href="#core-pass" x="106" y="97"/>
+      <text class="pass-label" x="62" y="156">pass 1</text>
+      <text class="pass-label" x="106" y="156">pass 2</text>
+      <use class="once" href="#block" x="150" y="33"/>
+      <text x="179" y="61">coda</text>
+    </g>
+    <g id="third-pass">
+      <use class="pass-three" href="#core-pass" x="150" y="97"/>
+      <text class="pass-label" x="150" y="156">pass 3</text>
+    </g>
+  </defs>
+
+  <rect width="424" height="324" fill="#121212"/>
+  <path d="M212 12 V312" stroke="#38434f"/>
+  <g aria-hidden="true">
+    <use href="#shared-architecture"/>
+    <use href="#third-pass"/>
+    <use class="wire" href="#repeat" x="44"/>
+    <path class="wire" d="M150 91 V83"/>
+  </g>
+  <g transform="translate(212)" aria-hidden="true">
+    <use href="#shared-architecture"/>
+    <use class="skipped" href="#third-pass"/>
+    <path fill="#4dabf7" d="M105 91 C105 81 118 85 130 89 C139 92 147 94 149 89
+                            H146.5 L150 82 L153.5 89 H151
+                            C149 97 138 94 129 91 C117 87 107 84 107 91 Z"/>
+    <text class="pass-label" x="150" y="227">skipped</text>
+  </g>
+</svg>
