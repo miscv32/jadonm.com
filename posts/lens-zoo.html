@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="160x160" href="../favicon.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/doto-500.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="../post.css">
+    <title>the logit lens zoo · jadon mensah</title>
+    
+    
+    
+</head>
+<body class="post">
+    <div id="main">
+        <header id="header"><h1><a href="../index.html">jadonm.com</a></h1></header>
+        <main id="content">
+            <article>
+                <header class="article-header">
+                    <h1>the logit lens zoo</h1>
+                    <p class="de-emph">Published <time datetime="2026-11-21">2026-11-21</time></p>
+                </header>
+                                <nav id="TOC" aria-label="Table of contents">
+                    <h2>Contents</h2>
+                    <ul>
+                    <li><a href="#what-is-a-lens"
+                    id="toc-what-is-a-lens">what is a lens?</a></li>
+                    <li><a href="#transformer-architecture-recap"
+                    id="toc-transformer-architecture-recap">transformer
+                    architecture recap</a></li>
+                    <li><a href="#logit-lens"
+                    id="toc-logit-lens"><em>the</em> logit lens</a></li>
+                    <li><a href="#tuned-lens" id="toc-tuned-lens">tuned
+                    lens</a></li>
+                    <li><a href="#j-lens"
+                    id="toc-j-lens">j-lens</a></li>
+                    <li><a href="#future-lens"
+                    id="toc-future-lens">future lens</a></li>
+                    <li><a href="#template-lens"
+                    id="toc-template-lens">template lens</a></li>
+                    <li><a href="#r-lens" id="toc-r-lens">r
+                    lens</a></li>
+                    <li><a href="#chain-lens" id="toc-chain-lens">chain
+                    lens</a></li>
+                    <li><a href="#j-plus-plus-lens"
+                    id="toc-j-plus-plus-lens">j++ lens</a></li>
+                    <li><a href="#oracle-lens"
+                    id="toc-oracle-lens">oracle lens</a></li>
+                    <li><a href="#omnilens"
+                    id="toc-omnilens">omnilens</a></li>
+                    <li><a href="#coda-lens" id="toc-coda-lens">coda
+                    lens</a></li>
+                    <li><a href="#k-lens" id="toc-k-lens">k lens
+                    ?!</a></li>
+                    <li><a href="#s-lens" id="toc-s-lens">s lens
+                    ?!</a></li>
+                    <li><a href="#omega-j-lenses"
+                    id="toc-omega-j-lenses"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
+                    lenses</a></li>
+                    <li><a href="#a-lens" id="toc-a-lens">a-lens
+                    ?!</a></li>
+                    </ul>
+                </nav>
+                                <p>In this post I try to explain a whole
+                                host of logit lens variants. If you have
+                                a specific lens you’d like to
+                                understand, this post’s best read in
+                                order according to the (interactive)
+                                graph of contents. (TODO Lesswrong
+                                crosspost edit because no image)
+                                Otherwise, you can read this
+                                top-to-bottom; I’ve arranged the
+                                sections such that a lens’ prerequisites
+                                precede it. You may or may not find the
+                                prerequisites helpful, but I’d recommend
+                                reading the transformer architecture
+                                recap at a minimum before you continue
+                                if you’re not already familiar with
+                                transformers.</p>
+                                <p>If you just want to know which lens
+                                to choose for your interpretability
+                                project, the MATS <a
+                                href="https://github.com/MATSResearch/compute_wiki/blob/master/docs/interpretability/mech-interp.md#which-lens-should-i-use-decision-table"><em>Which
+                                lens should I use?</em></a> decision
+                                table might be a good place to
+                                start.</p>
+                                <object data="../resource/lens-zoo/lens-family.svg" type="image/svg+xml" aria-label="Logit Lens family tree" style="display: block; width: 100%; aspect-ratio: 1200 / 617;">
+                                <a href="../resource/lens-zoo/lens-family.svg">open
+                                the Logit Lens family tree</a>
+                                </object>
+                                <section id="what-is-a-lens"
+                                class="level2">
+                                <h2>what is a lens?</h2>
+                                <p>Loosely, a lens is anything that
+                                takes model activations and produces a
+                                potentially workspace-like<a href="#fn1"
+                                class="footnote-ref" id="fnref1"
+                                role="doc-noteref"><sup>1</sup></a>,
+                                somewhat human-interpretable, maybe
+                                causally relevant output. This output is
+                                usually a distribution over tokens, or
+                                sometimes multi-token trajectories.
+                                Tools like labelled SAE features,
+                                labelled MLP neurons, and NLAs probably
+                                also count as lenses, but they don’t
+                                have “lens” in the name so I won’t
+                                discuss them here.</p>
+                                </section>
+                                <section
+                                id="transformer-architecture-recap"
+                                class="level2">
+                                <h2>transformer architecture recap</h2>
+                                <dl>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://transformer-circuits.pub/2021/framework/index.html">A
+                                Mathematical Framework for Transformer
+                                Circuits</a>, Anthropic (2021)
+                                </dd>
+                                </dl>
+                                <figure class="lens-diagram architecture-recap-figure">
+                                <iframe src="../resource/lens-zoo/residual-stream.svg?view=recap" title="Transformer architecture diagram">
+                                </iframe>
+                                </figure>
+                                <ul>
+                                <li>A transformer takes a sequence of
+                                tokens as input.</li>
+                                <li>Each token is a one-hot vector of
+                                shape
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>V</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|V| \times 1</annotation></semantics></math>,
+                                i.e. the token that we assign index
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+                                is represented by the vector where
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">v_i = 1</annotation></semantics></math>,
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>j</mi></msub><msub><mo stretchy="false" form="prefix">|</mo><mrow><mi>j</mi><mo>≠</mo><mi>i</mi></mrow></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">v_j |_{j \ne i} = 0</annotation></semantics></math></li>
+                                <li>First, we apply the “embedding
+                                matrix” which “down-projects” the
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>V</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|V| \times 1</annotation></semantics></math>
+                                token to a
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow></msub><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">d_{model} \times 1</annotation></semantics></math>
+                                residual-stream vector
+                                <ul>
+                                <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow></msub><annotation encoding="application/x-tex">d_{model}</annotation></semantics></math>
+                                is called the “hidden dimension”</li>
+                                </ul></li>
+                                <li>Transformer blocks (layers), at a
+                                high level, read from and write to the
+                                residual stream based on the earlier
+                                tokens in the sequence and the residual
+                                stream as seen at their input.
+                                <ul>
+                                <li>You can think of attention heads as
+                                responsible for looking back at earlier
+                                tokens, and writing relevant information
+                                from those tokens into the residual
+                                stream, and the MLPs as responsible for
+                                doing various computations and
+                                transformations with the information in
+                                the residual stream.</li>
+                                </ul></li>
+                                <li>Finally, the residual-stream vector
+                                is “up-projected” from
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow></msub><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">d_{model} \times 1</annotation></semantics></math>
+                                to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>V</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|V| \times 1</annotation></semantics></math>
+                                by the unembedding matrix. The resulting
+                                vector can be interpreted as a
+                                log-probability distribution over
+                                tokens, given the model parameters and
+                                sequence of already-seen tokens.</li>
+                                </ul>
+                                </section>
+                                <section id="logit-lens" class="level2">
+                                <h2><em>the</em> logit lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#what-is-a-lens">what is a
+                                lens?</a>, <a
+                                href="#transformer-architecture-recap">transformer
+                                architecture recap</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens">interpreting
+                                GPT: the logit lens</a>,
+                                <code>nostalgebraist</code> (2020)
+                                </dd>
+                                </dl>
+                                <p>The logit lens is simple to
+                                implement; we apply the unembedding
+                                matrix at an intermediate point in the
+                                residual stream. An equivalent way of
+                                thinking about this is that we “cut out”
+                                further transformer blocks past some
+                                point in the residual stream (see
+                                interactive figure).</p>
+                                <p class="residual-stream-toggle lens-diagram-switch" role="group" aria-label="Diagram view">
+                                <button type="button" aria-pressed="true" aria-controls="residual-stream-figure">
+                                Full transformer
+                                </button>
+                                <span aria-hidden="true">·</span>
+                                <button type="button" aria-pressed="false" aria-controls="residual-stream-figure" data-lens-view>Logit
+                                lens</button>
+                                </p>
+                                <figure class="lens-diagram logit-lens-figure">
+                                <iframe id="residual-stream-figure" src="../resource/lens-zoo/residual-stream.svg" title="Transformer and logit lens diagram">
+                                </iframe>
+                                </figure>
+                                <script src="../resource/lens-zoo/residual-stream.js" defer></script>
+                                <p>Why does this work at all?</p>
+                                <p>If a layer “wants” to push the
+                                next-token prediction towards a specific
+                                token
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐞</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{e}_i</annotation></semantics></math><a
+                                href="#fn2" class="footnote-ref"
+                                id="fnref2"
+                                role="doc-noteref"><sup>2</sup></a>, the
+                                best way for it to transmit this
+                                information is by writing the vector
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐯</mi><annotation encoding="application/x-tex">\mathbf{v}</annotation></semantics></math>
+                                to the residual stream, where
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐞</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{e}_i</annotation></semantics></math>
+                                =
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U\mathbf{v}</annotation></semantics></math><a
+                                href="#fn3" class="footnote-ref"
+                                id="fnref3"
+                                role="doc-noteref"><sup>3</sup></a>.</p>
+                                <p>On the other hand, if a layer has
+                                information that it intends for a later
+                                layer to read as part of a circuit,
+                                there’s no reason that the way it writes
+                                this information to the residual stream
+                                should have any relation to the
+                                unembedding matrix, since the later
+                                layer(s) can easily transform these
+                                directions arbitrarily.</p>
+                                <p>As you’d expect, the output of the
+                                logit lens is not very interpretable
+                                when applied on the lower layers, since
+                                much of the residual stream content is
+                                written to transmit information to later
+                                layers for further computation. We’ll
+                                call the tendency for average
+                                token-concept representations at
+                                intermediate layers to drift from the
+                                inverse-unembedding basis<a href="#fn4"
+                                class="footnote-ref" id="fnref4"
+                                role="doc-noteref"><sup>4</sup></a>,
+                                <em>representational drift</em>.</p>
+                                <p>Another important limitation of the
+                                logit lens is that it doesn’t target the
+                                model’s <em>global workspace</em>
+                                well.</p>
+                                <p>The global workspace is
+                                (handwavingly) the space of concepts
+                                which a model has “conscious” access to,
+                                i.e. that it can accurately report on
+                                and manipulate at will. For instance,
+                                when answering a dastardly difficult
+                                multi-step reasoning problem like “What
+                                colour are the buses in the city
+                                containing Buckingham Palace?”, we might
+                                expect to observe concepts relating to
+                                the words “bus”, “city”, “Buckingham
+                                Palace”, “London”, and “red” in the
+                                workspace.</p>
+                                <p>The logit lens at a particular
+                                position in the residual stream mostly
+                                surfaces the tokens that the preceding
+                                layer wants to push the next-token
+                                prediction towards. For a question like
+                                “What colour is
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>?”,
+                                it’s quite clear that “London” is an
+                                unlikely answer, so a model might avoid
+                                pushing the next-token prediction
+                                towards “London”, even though it’s
+                                likely the model represents a concept
+                                for “London” internally as part of an
+                                intermediate reasoning step.</p>
+                                <dl>
+                                <dt>next:</dt>
+                                <dd>
+                                <a href="#tuned-lens">tuned lens</a>, <a
+                                href="#j-lens">j-lens</a>, <a
+                                href="#future-lens">future lens</a>, <a
+                                href="#chain-lens">chain lens</a>, or <a
+                                href="#coda-lens">coda lens</a>.
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="tuned-lens" class="level2">
+                                <h2>tuned lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#logit-lens"><em>the</em> logit
+                                lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://arxiv.org/pdf/2303.08112">Eliciting
+                                Latent Predictions from Transformers
+                                with the Tuned Lens</a>, Belrose <em>et
+                                al.</em> (2023)
+                                </dd>
+                                </dl>
+                                <p>We saw earlier that the logit lens
+                                fails to account for
+                                <em>representational drift</em>, that
+                                is, the same token-concepts being
+                                represented differently at different
+                                points in the residual stream. To
+                                account for this, the tuned lens trains
+                                an affine<a href="#fn5"
+                                class="footnote-ref" id="fnref5"
+                                role="doc-noteref"><sup>5</sup></a>
+                                “translator” to approximate the
+                                behaviour of the transformer blocks
+                                after some point in the residual
+                                stream.</p>
+                                <p class="residual-stream-toggle lens-diagram-switch" role="group" aria-label="Diagram view">
+                                <button type="button" aria-pressed="false" aria-controls="tuned-lens-figure">
+                                Full transformer
+                                </button>
+                                <span aria-hidden="true">·</span>
+                                <button type="button" aria-pressed="true" aria-controls="tuned-lens-figure" data-lens-view>Tuned
+                                lens</button>
+                                </p>
+                                <figure class="lens-diagram tuned-lens-figure">
+                                <iframe id="tuned-lens-figure" src="../resource/lens-zoo/residual-stream.svg?lens=tuned" title="Transformer and tuned lens diagram">
+                                </iframe>
+                                </figure>
+                                <p>As long as the representational drift
+                                is well approximated by an affine
+                                transformation, the tuned lens should
+                                correct for this and provide a more
+                                interpretable readout, especially at
+                                earlier layers where the drift is
+                                worse.</p>
+                                <p>As long as the computation done by
+                                the transformer layers after some point
+                                is <em>not</em> well approximated by an
+                                affine transformation, the translator
+                                that replaces them should be incapable
+                                of learning to “shortcut” intermediate
+                                activations to last-layer activations.
+                                If our translator copies the computation
+                                done by the transformer layers it
+                                replaces too well, it becomes useless,
+                                since we lose access to the intermediate
+                                steps we’re interested in.</p>
+                                <p>Of course, neither of these
+                                assumptions are entirely true. Tuned
+                                lenses tend to produce more coherent
+                                outputs at earlier layers compared to
+                                logit lenses, but in practice they
+                                sometimes have the capacity to
+                                approximate the remaining transformer
+                                layers fairly well, skipping over
+                                intermediate token-concept
+                                representations that other lenses can
+                                recover.</p>
+                                <p>Unfortunately, like its <a
+                                href="#logit-lens">younger sibling</a>,
+                                the tuned lens still doesn’t target the
+                                model’s workspace well.</p>
+                                <p>The aim of a tuned lens is to <a
+                                href="https://arxiv.org/pdf/2303.08112">Elicit
+                                Latent Predictions</a>, and therefore it
+                                shouldn’t be surprising that tuned lens
+                                output distribution at later layers
+                                roughly monotonically converges towards
+                                the model’s actual output distribution.
+                                We trained our “translators” to minimise
+                                prediction error, and with each
+                                successive layer we give them input with
+                                greater <em>mutual information</em> with
+                                the output they’re trying to
+                                predict.</p>
+                                <p>However, we might expect the
+                                workspace token distributions to
+                                occasionally diverge from the final
+                                next-token prediction when the model
+                                does multi-step reasoning. This suggests
+                                that the tuned lens doesn’t reliably
+                                target the model’s workspace.</p>
+                                <dl>
+                                <dt>next:</dt>
+                                <dd>
+                                <a href="#future-lens">future lens</a>
+                                or <a href="#omnilens">omnilens</a>.
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="j-lens" class="level2">
+                                <h2>j-lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#logit-lens"><em>the</em> logit
+                                lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://transformer-circuits.pub/2026/workspace/">Verbalizable
+                                Representations Form a Global Workspace
+                                in Language Models</a>, Anthropic (2026)
+                                </dd>
+                                </dl>
+                                <p>The J-lens is a significant
+                                improvement on the logit lens, allowing
+                                us to observe workspace-like
+                                behaviour.</p>
+                                <p>How does it work? From <a
+                                href="(https://transformer-circuits.pub/2026/workspace/)"><em>‘Verbalizable
+                                representations…’</em></a> (emphasis
+                                mine):</p>
+                                <blockquote>
+                                <p>Concretely, it computes, for each
+                                layer, the <strong>average linearized
+                                effect of an activation on the model’s
+                                likelihood of producing a particular
+                                token</strong> (now or in the future),
+                                averaging over a large corpus of
+                                contexts…</p>
+                                </blockquote>
+                                <p>What does this mean?</p>
+                                <p>Intuition</p>
+                                <p>Take the transformer blocks +
+                                unembedding matrix after some point as a
+                                black box. We start with some initial
+                                activations (context), and see what
+                                outputs they produce. We then perturb
+                                these initial activations, and look at
+                                the <em>change</em> in the output token
+                                distribution given this perturbation. We
+                                average this change across many
+                                different contexts, to get rid of
+                                effects of perturbation that only appear
+                                in some context but not in others. If we
+                                try enough varied contexts, we should be
+                                able to build a model of how perturbing
+                                an activation in some direction tends to
+                                shift the distribution.</p>
+                                <p>We care about how a direction tends
+                                to shift the distribution independent of
+                                context because in some sense this
+                                should be its “meaning”, assuming that
+                                the model constructs higher
+                                level/compound concepts by superposing
+                                directions for different features (see
+                                understanding LRH)</p>
+                                <div class="j-lens-toolbar">
+                                  <p class="residual-stream-toggle" data-j-lens role="group" aria-label="J-lens diagram steps" hidden>
+                                    <button type="button" data-slide="average" aria-pressed="true" aria-controls="j-lens-figure">Average effects</button>
+                                    <span aria-hidden="true">·</span>
+                                    <button type="button" data-slide="readout" aria-pressed="false" aria-controls="j-lens-figure">Read out</button>
+                                  </p>
+                                  <div class="j-lens-steps" role="group" aria-label="Average effects slideshow" hidden>
+                                    <button type="button" data-direction="-1" aria-label="Previous step" aria-controls="j-lens-figure" disabled>
+                                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 L9 12 L15 6"/></svg>
+                                    </button>
+                                    <span role="status" aria-atomic="true">1 / 5</span>
+                                    <button type="button" data-direction="1" aria-label="Next step" aria-controls="j-lens-figure">
+                                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18 L15 12 L9 6"/></svg>
+                                    </button>
+                                  </div>
+                                </div>
+                                <figure class="lens-diagram j-lens-figure">
+                                  <iframe id="j-lens-figure" src="../resource/lens-zoo/j-lens.svg#average-1" title="J-lens diagram: Average effects, Context 1"></iframe>
+                                </figure>
+                                <script src="../resource/lens-zoo/j-lens.js" defer></script>
+                                <p>Mathematical derivation</p>
+                                <p>TODO work out nice way of deriving
+                                this mathematically. Also check if it
+                                exists in global workspace paper</p>
+                                <dl>
+                                <dt>next:</dt>
+                                <dd>
+                                <a href="#template-lens">template
+                                lens</a>, <a href="#r-lens">r lens</a>,
+                                <a href="#chain-lens">chain lens</a>, <a
+                                href="#j-plus-plus-lens">j++ lens</a>,
+                                <a href="#k-lens">k lens ?!</a>, <a
+                                href="#omega-j-lenses"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
+                                lenses</a>, or <a href="#a-lens">a-lens
+                                ?!</a>.
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="future-lens"
+                                class="level2">
+                                <h2>future lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#logit-lens"><em>the</em> logit
+                                lens</a>, <a href="#tuned-lens">tuned
+                                lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://aclanthology.org/2023.conll-1.37.pdf">Future
+                                Lens: Anticipating Subsequent Tokens
+                                from a Single Hidden State</a>, Pal
+                                <em>et al.</em> (2023)
+                                </dd>
+                                </dl>
+                                <p>TODO determine whether tuned lens
+                                should actually be prereq. I’m leaning
+                                no, they are both learning-based and
+                                future lens paper cites tuned lens but
+                                the method is different, future lens
+                                doesn’t use affine translator at
+                                all.</p>
+                                <p>This is a pretty creative and cool
+                                one.</p>
+                                <p>Intuition</p>
+                                <p>We take some intermediate layer
+                                activations from a model, and record the
+                                subsequent predicted tokens that
+                                correspond to each activation. “real
+                                context”</p>
+                                <p>Then, we might hope that we can take
+                                this intermediate layer activation and
+                                transplant it into a different context,
+                                and steer the model to say the same
+                                thing as in the original context</p>
+                                <p>in practice though the transformer
+                                blocks after the injection point attend
+                                to prior tokens in the prompt, so this
+                                doesnt work that well.</p>
+                                <p>We can optimise a “soft prompt” /
+                                soft context so that the model predicts
+                                the “real continuations” well over many
+                                different injected activations. The idea
+                                here is that the soft prompt will be
+                                optimised to only contain information
+                                which helps generalised prediction
+                                capability e.g. “output gramatically
+                                correct text” and therefore the output
+                                on the soft prompt + unseen activation
+                                is only a function of the “meaning” of
+                                the unseen activation. On decoding
+                                further tokens we feed back in the soft
+                                prompt + first decoded token but
+                                re-inject the hidden state.</p>
+                                <ul>
+                                <li><p>TODO is this workspace-like? my
+                                feeling is No</p></li>
+                                <li><p>TODO i think this is the first
+                                example of multi token lens?
+                                verify</p></li>
+                                <li><p>problem: maybe transformer blocks
+                                memorise some info that hidden state
+                                elicits but is not actually present in
+                                the hidden state itself</p></li>
+                                </ul>
+                                </section>
+                                <section id="template-lens"
+                                class="level2">
+                                <h2>template lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#j-lens">j-lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://transformer-circuits.pub/2026/workspace/">Verbalizable
+                                Representations Form a Global Workspace
+                                in Language Models</a>, Anthropic (2026)
+                                </dd>
+                                </dl>
+                                <p>Introduced in the same paper as the
+                                J-lens, the template lens is</p>
+                                <dl>
+                                <dt>next:</dt>
+                                <dd>
+                                <a href="#oracle-lens">oracle lens</a>.
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="r-lens" class="level2">
+                                <h2>r lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#j-lens">j-lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://www.lesswrong.com/posts/nv8oedrnLXKRzNEL9/r-lens-making-j-lens-more-faithful-on-early-layers#:~:text=Methods%3A%20the%20R%2DLens">R-lens:
+                                Making J-lens More Faithful on Early
+                                Layers</a>, <code>camilablank</code>
+                                <em>et al.</em> (2026)
+                                </dd>
+                                <dt>next:</dt>
+                                <dd>
+                                <a href="#j-plus-plus-lens">j++ lens</a>
+                                or <a href="#s-lens">s lens ?!</a>.
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="chain-lens" class="level2">
+                                <h2>chain lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#logit-lens"><em>the</em> logit
+                                lens</a>, <a href="#j-lens">j-lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://www.lesswrong.com/posts/Nr6fksEqqxNpdz6rk/the-chain-lens-interim#:~:text=The%20core%20idea%20is%20that%20we%20start%20with%20the%20J%2Dlens">The
+                                Chain Lens [interim]</a>, Vogel and
+                                Douglas (2026)
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="j-plus-plus-lens"
+                                class="level2">
+                                <h2>j++ lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#j-lens">j-lens</a>, <a
+                                href="#r-lens">r lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#:~:text=We%20introduce%20the%20J%2B%2B%20Lens%2C%20which%20improves">J++
+                                Lens: Jacobian Filtering Enables More
+                                Faithful Workspace Lenses</a>, Ayonrinde
+                                and Lindsey (2026)
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="oracle-lens"
+                                class="level2">
+                                <h2>oracle lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#template-lens">template
+                                lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://transformer-circuits.pub/2026/workspace/#:~:text=The%20template%20lens%20requires%20its%20vocabulary">Verbalizable
+                                Representations Form a Global Workspace
+                                in Language Models</a>, Anthropic (2026)
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="omnilens" class="level2">
+                                <h2>omnilens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#tuned-lens">tuned lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://arxiv.org/abs/2608.10260">Interpreting
+                                Language Model Hidden States at
+                                Scale</a>, Pettyjohn <em>et al.</em>
+                                (2026)
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="coda-lens" class="level2">
+                                <h2>coda lens</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#logit-lens"><em>the</em> logit
+                                lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://www.goodfire.com/research/interpreting-inkling-2-mini#:~:text=Decoding%20loops%3A%20logit%2Dlens%2C%20tuned%2Dlens%2C%20coda%2Dlens">Interpreting
+                                Inkling 2 Mini</a>, Lee <em>et al.</em>
+                                (2026)
+                                </dd>
+                                </dl>
+                                <p>TODO cleanup This is a pretty simple
+                                lens, conceptually similar to the logit
+                                lens. In some looped LLMs like inkling
+                                2, there is a prelude -&gt; n loops of k
+                                blocks each -&gt; coda (TODO diagram).
+                                We just “cut out” the last few loops in
+                                the same manner as the last few
+                                transformer blocks are cut out for the
+                                logit lens, and apply the coda to read
+                                out the inter-layer state.</p>
+                                </section>
+                                <section id="k-lens" class="level2">
+                                <h2>k lens ?!</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#j-lens">j-lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://x.com/voooooogel/status/2084858861551526002">K-lens</a>,
+                                Vogel (2026), with <a
+                                href="https://github.com/stdlogits/neuron-lens#lenses-from-the-logit-lens-to-the-r-lens-and-s-lens">attribution
+                                and method in the neuron-lens
+                                documentation</a>
+                                </dd>
+                                <dt>next:</dt>
+                                <dd>
+                                <a href="#s-lens">s lens ?!</a>.
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="s-lens" class="level2">
+                                <h2>s lens ?!</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#r-lens">r lens</a>, <a
+                                href="#k-lens">k lens ?!</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://github.com/stdlogits/neuron-lens#lenses-from-the-logit-lens-to-the-r-lens-and-s-lens">neuron-lens</a>,
+                                <code>_a9lim</code> and
+                                <code>treetowntree</code> (2026)
+                                </dd>
+                                </dl>
+                                <p>S-lens is to <a
+                                href="#r-lens">R-lens</a> as <a
+                                href="#k-lens">K-lens</a> is to <a
+                                href="#j-lens">J-lens</a>.</p>
+                                </section>
+                                <section id="omega-j-lenses"
+                                class="level2">
+                                <h2><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
+                                lenses</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#j-lens">j-lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://arxiv.org/html/2610.31955v1#S1.SS2">A
+                                Mathematical Theory of the Jacobian
+                                Lens</a>, Ostrow <em>et al.</em> (2026)
+                                </dd>
+                                </dl>
+                                </section>
+                                <section id="a-lens" class="level2">
+                                <h2>a-lens ?!</h2>
+                                <dl>
+                                <dt>prerequisites:</dt>
+                                <dd>
+                                <a href="#j-lens">j-lens</a>.
+                                </dd>
+                                <dt>further reading:</dt>
+                                <dd>
+                                <a
+                                href="https://github.com/moudrkat/brainscope/blob/main/docs/jlens.md#a-lens-experimental-ours">A-lens
+                                (experimental, ours)</a>, brainscope
+                                (2026)
+                                </dd>
+                                </dl>
+                                </section>
+                                <aside id="footnotes"
+                                class="footnotes footnotes-end-of-document"
+                                role="doc-endnotes">
+                                <hr />
+                                <ol>
+                                <li id="fn1"><p>Psychology term
+                                referring to the space of consciously
+                                accessible and manipulable concepts –
+                                see <a
+                                href="https://pubmed.ncbi.nlm.nih.gov/11849615/">Baars
+                                (2002)</a><a href="#fnref1"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li
+                                id="fn2"><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐞</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{e}_i</annotation></semantics></math>
+                                is the vector with i’th component 1 and
+                                all other components 0<a href="#fnref2"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li
+                                id="fn3"><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐖</mi><mi>U</mi></msub><annotation encoding="application/x-tex">\mathbf{W}_U</annotation></semantics></math>
+                                is the <a
+                                href="#transformer-architecture-recap">unembedding
+                                matrix</a><a href="#fnref3"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li
+                                id="fn4"><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐞</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{e}_i</annotation></semantics></math>
+                                =
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>𝐔</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{W_U}\mathbf{v}</annotation></semantics></math>.
+                                Suppose there exists some
+                                “inverse-unembedding” matrix
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐖</mi><msub><mi>′</mi><mi>U</mi></msub><mo>:</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> </mtext><mspace width="0.333em"></mspace></mrow><mi>𝐖</mi><msub><mi>′</mi><mi>U</mi></msub><msub><mi>𝐖</mi><mi>U</mi></msub><mo>=</mo><mi>𝕀</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}&#39;_U: \text{ } \mathbf{W}&#39;_U \mathbf{W}_U = \mathbb{I}</annotation></semantics></math>.
+                                Then
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐖</mi><msub><mi>′</mi><mi>u</mi></msub><msub><mi>𝐞</mi><mi>i</mi></msub><mo>=</mo><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}&#39;_u \mathbf{e}_i = \mathbf{v}</annotation></semantics></math>,
+                                i.e. the columns of the
+                                “inverse-unembedding” matrix are the
+                                vectors that most push the output toward
+                                each token.<a href="#fnref4"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn5"><p>An <em>affine</em>
+                                transformation of a vector
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐯</mi><annotation encoding="application/x-tex">\mathbf{v}</annotation></semantics></math>
+                                to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐮</mi><annotation encoding="application/x-tex">\mathbf{u}</annotation></semantics></math>
+                                is described by a matrix
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\mathbf{W}</annotation></semantics></math>
+                                and vector
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐛</mi><annotation encoding="application/x-tex">\mathbf{b}</annotation></semantics></math>,
+                                and computed as
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐮</mi><mo>=</mo><mi>𝐖</mi><mi>𝐯</mi><mo>+</mo><mi>𝐛</mi></mrow><annotation encoding="application/x-tex">\mathbf{u} = \mathbf{W}\mathbf{v} + \mathbf{b}</annotation></semantics></math><a
+                                href="#fnref5" class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                </ol>
+                                </aside>
+            </article>
+        </main>
+        <footer id="footer">
+            <a href="https://github.com/miscv32">github</a>
+            <a href="https://x.com/miscv32">twitter</a>
+            <a href="https://linkedin.com/in/jadonm/">linkedin</a>
+            <p>email: initials + 2675 [at] cam.ac.uk</p>
+        </footer>
+    </div>
+    <script src="../js/post-margins.js" defer></script>
+</body>
+</html>

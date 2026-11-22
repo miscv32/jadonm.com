@@ -1,0 +1,9 @@
+:root {
+    --figure-fade: 120ms;
+    --figure-move: 360ms;
+    --figure-fade-ease: ease-out;
+    --figure-move-ease: cubic-bezier(.25, .8, .25, 1);
+    --figure-reveal: calc(var(--figure-fade) + var(--figure-move));
+    --figure-grow-delay: calc(var(--figure-fade) - 20ms);
+    --figure-shrink-delay: calc(var(--figure-fade) + 25ms);
+}
