@@ -49,8 +49,15 @@
                     id="toc-future-lens">future lens</a></li>
                     <li><a href="#template-lens"
                     id="toc-template-lens">template lens</a></li>
-                    <li><a href="#r-lens" id="toc-r-lens">r
-                    lens</a></li>
+                    <li><a href="#r-lens" id="toc-r-lens">r lens</a>
+                    <ul>
+                    <li><a href="#denoising-gradients"
+                    id="toc-denoising-gradients">1. denoising
+                    gradients</a></li>
+                    <li><a href="#sensitivity-vs-contribution"
+                    id="toc-sensitivity-vs-contribution">2. sensitivity
+                    vs contribution</a></li>
+                    </ul></li>
                     <li><a href="#chain-lens" id="toc-chain-lens">chain
                     lens</a></li>
                     <li><a href="#j-plus-plus-lens"
@@ -68,8 +75,6 @@
                     <li><a href="#omega-j-lenses"
                     id="toc-omega-j-lenses"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
                     lenses</a></li>
-                    <li><a href="#a-lens" id="toc-a-lens">a-lens
-                    ?!</a></li>
                     </ul>
                 </nav>
                                 <p>In this post I try to explain a whole
@@ -77,17 +82,15 @@
                                 a specific lens you’d like to
                                 understand, this post’s best read in
                                 order according to the (interactive)
-                                graph of contents. (TODO Lesswrong
-                                crosspost edit because no image)
-                                Otherwise, you can read this
-                                top-to-bottom; I’ve arranged the
-                                sections such that a lens’ prerequisites
-                                precede it. You may or may not find the
-                                prerequisites helpful, but I’d recommend
-                                reading the transformer architecture
-                                recap at a minimum before you continue
-                                if you’re not already familiar with
-                                transformers.</p>
+                                graph of contents. Otherwise, you can
+                                read this top-to-bottom; I’ve arranged
+                                the sections such that a lens’
+                                prerequisites precede it. You may or may
+                                not find the prerequisites helpful, but
+                                I’d recommend reading the transformer
+                                architecture recap at a minimum before
+                                you continue if you’re not already
+                                familiar with transformers.</p>
                                 <p>If you just want to know which lens
                                 to choose for your interpretability
                                 project, the MATS <a
@@ -95,7 +98,15 @@
                                 lens should I use?</em></a> decision
                                 table might be a good place to
                                 start.</p>
-                                <object data="../resource/lens-zoo/lens-family.svg" type="image/svg+xml" aria-label="Logit Lens family tree" style="display: block; width: 100%; aspect-ratio: 1200 / 617;">
+                                <p><a
+                                href="https://www.lesswrong.com/posts/Zeg2JztbdhguL48uH/workspacebench-evaluating-interpretability-methods-for-the">WorkspaceBench</a>
+                                is a benchmark for global workspace
+                                lenses. It’s worth reading the LW post
+                                (especially the section <em>Desiderata
+                                of a workspace reader</em>) to
+                                understand the kind of tasks that we’d
+                                like our lenses to do well on.</p>
+                                <object data="../resource/lens-zoo/lens-family.svg" type="image/svg+xml" aria-label="Logit Lens family tree" style="display: block; width: 100%; aspect-ratio: 1004 / 617;">
                                 <a href="../resource/lens-zoo/lens-family.svg">open
                                 the Logit Lens family tree</a>
                                 </object>
@@ -126,7 +137,7 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://transformer-circuits.pub/2021/framework/index.html">A
+                                href="https://transformer-circuits.pub/2021/framework/index.html#high-level-architecture">A
                                 Mathematical Framework for Transformer
                                 Circuits</a>, Anthropic (2021)
                                 </dd>
@@ -172,12 +183,7 @@
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow></msub><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">d_{model} \times 1</annotation></semantics></math>
                                 to
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>V</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|V| \times 1</annotation></semantics></math>
-                                by the unembedding matrix. The resulting
-                                vector can be interpreted as a
-                                log-probability distribution over
-                                tokens, given the model parameters and
-                                sequence of already-seen
-                                tokens.</p></li>
+                                by the unembedding matrix.</p></li>
                                 <li><p>For simplicity, we’ll ignore
                                 normalisation and softmax-ing.</p></li>
                                 </ul>
@@ -203,7 +209,7 @@
                                 dimension”</p></li>
                                 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
                                 – residual stream content after
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>l</mi><annotation encoding="application/x-tex">l</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>
                                 transformer blocks, an arbitrary
                                 intermediate position.</p>
                                 <ul>
@@ -224,8 +230,7 @@
                                 – unembedding matrix.</p>
                                 <ul>
                                 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><msub><mi>𝐡</mi><mi>L</mi></msub></mrow><annotation encoding="application/x-tex">\mathbf{W}_U\mathbf{h}_L</annotation></semantics></math>
-                                yields the predicted next-token
-                                distribution.</li>
+                                yields the logits.</li>
                                 </ul></li>
                                 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐖</mi><mi>E</mi></msub><annotation encoding="application/x-tex">\mathbf{W}_E</annotation></semantics></math>
                                 – embedding matrix.</p>
@@ -271,7 +276,7 @@
                                 Mathematically, the logit lens on
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
                                 replaces
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{l+1:L}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{\ell+1:L}</annotation></semantics></math>
                                 with the identity function.</p>
                                 <div class="figure-pane-toolbar" data-figure-controls>
                                   <p class="figure-pane-toggle" data-figure-panes="Logit lens" data-figure-message="residualStreamView" role="group" aria-label="Logit lens diagram view" hidden>
@@ -294,9 +299,7 @@
                                 information is by writing the vector
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐯</mi><annotation encoding="application/x-tex">\mathbf{v}</annotation></semantics></math>
                                 to the residual stream, where
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐞</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{e}_i</annotation></semantics></math>
-                                =
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U\mathbf{v}</annotation></semantics></math>.</p>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐞</mi><mi>i</mi></msub><mo>=</mo><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{e}_i = \mathbf{W}_U\mathbf{v}</annotation></semantics></math>.</p>
                                 <p>On the other hand, if a layer has
                                 information that it intends for a later
                                 layer to read as part of a circuit,
@@ -328,7 +331,7 @@
                                 layers. We’ll call the tendency for
                                 average token-concept representations at
                                 intermediate layers to drift from the
-                                inverse-unembedding “basis”<a
+                                “inverse-unembedding” “basis”<a
                                 href="#fn2" class="footnote-ref"
                                 id="fnref2"
                                 role="doc-noteref"><sup>2</sup></a>,
@@ -351,16 +354,17 @@
                                 Palace”, “London”, and “red” in the
                                 workspace.</p>
                                 <p>As explained earlier, the logit lens
-                                can be thought of as a best-guess at the
-                                next token. For the multi-step reasoning
-                                problem stated above, it’s quite clear
-                                that “London” is an unlikely final
-                                answer, so a model might avoid pushing
-                                the next-token prediction towards
-                                “London”, even though it’s likely the
-                                model represents a concept for “London”
-                                internally as part of an intermediate
-                                reasoning step.</p>
+                                can be thought of as a best-guess, given
+                                an intermediate residual stream vector,
+                                at the final logits. For the multi-step
+                                reasoning problem stated above, it’s
+                                quite clear that “London” is an unlikely
+                                final answer, so a model might avoid
+                                pushing the next-token prediction
+                                towards “London”, even though it’s
+                                likely the model represents a concept
+                                for “London” internally as part of an
+                                intermediate reasoning step.</p>
                                 <dl>
                                 <dt>next:</dt>
                                 <dd>
@@ -383,7 +387,7 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://arxiv.org/pdf/2303.08112">Eliciting
+                                href="https://arxiv.org/html/2303.08112#S3">Eliciting
                                 Latent Predictions from Transformers
                                 with the Tuned Lens</a>, Belrose <em>et
                                 al.</em> (2023)
@@ -401,7 +405,7 @@
                                 class="footnote-ref" id="fnref3"
                                 role="doc-noteref"><sup>3</sup></a>
                                 “translator” to approximate
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{l+1:L}</annotation></semantics></math>.</p>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{\ell+1:L}</annotation></semantics></math>.</p>
                                 <div class="figure-pane-toolbar" data-figure-controls>
                                   <p class="figure-pane-toggle" data-figure-panes="Tuned lens" data-figure-message="residualStreamView" role="group" aria-label="Tuned lens diagram view" hidden>
                                     <button type="button" data-slide="full" aria-pressed="false" aria-controls="tuned-lens-figure">Full transformer</button>
@@ -448,18 +452,17 @@
                                 the tuned lens still doesn’t target the
                                 model’s workspace well.</p>
                                 <p>The aim of a tuned lens is to <a
-                                href="https://arxiv.org/pdf/2303.08112">Elicit
+                                href="https://arxiv.org/html/2303.08112#S3">Elicit
                                 Latent Predictions</a>, and therefore it
                                 shouldn’t be surprising that tuned lens
                                 output distribution at later layers
                                 roughly monotonically converges towards
                                 the model’s actual output distribution.
                                 We trained our “translators” to minimise
-                                prediction error, and with each
-                                successive layer we give them input with
-                                greater <em>mutual information</em> with
-                                the output they’re trying to
-                                predict.</p>
+                                prediction error, and it’s intuitive
+                                that at later layers the output is
+                                easier to predict from the hidden
+                                state.</p>
                                 <p>However, we might expect the
                                 workspace token distributions to
                                 occasionally diverge from the final
@@ -487,7 +490,7 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://transformer-circuits.pub/2026/workspace/">Verbalizable
+                                href="https://transformer-circuits.pub/2026/workspace/#methods-jlens">Verbalizable
                                 Representations Form a Global Workspace
                                 in Language Models</a>, Anthropic (2026)
                                 </dd>
@@ -497,7 +500,7 @@
                                 us to observe workspace-like
                                 behaviour.</p>
                                 <p>How does it work? From <a
-                                href="(https://transformer-circuits.pub/2026/workspace/)"><em>‘Verbalizable
+                                href="https://transformer-circuits.pub/2026/workspace/#methods-jlens"><em>‘Verbalizable
                                 representations…’</em></a> (emphasis
                                 mine):</p>
                                 <blockquote>
@@ -514,23 +517,34 @@
                                 <em>change</em> the token distribution,
                                 averaged over many contexts, tells us
                                 its meaning.</p>
-                                <p>Mathematically, the token-concept
-                                distribution that we want to assign to
+                                <p>Mathematically, the logit shift that
+                                we want to assign to
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
                                 is</p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mfrac><mrow><mi>∂</mi><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mi>L</mi></msub></mrow></mfrac><mo>=</mo><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐉</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U \frac{\partial F_{l+1:L}}{\partial \mathbf{h}_L} = \mathbf{W}_U \mathbf{J}</annotation></semantics></math></p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mfrac><mrow><mi>∂</mi><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow></mfrac><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>=</mo><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐉</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><annotation encoding="application/x-tex">\mathbf{W}_U \frac{\partial F_{\ell+1:L}}{\partial \mathbf{h}_\ell} \mathbf{h}_\ell = \mathbf{W}_U \mathbf{J} \mathbf{h}_\ell</annotation></semantics></math></p>
                                 <p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐉</mi><annotation encoding="application/x-tex">\mathbf{J}</annotation></semantics></math>
                                 is called the Jacobian. Calculating the
-                                Jacobian exactly is intractable for the
-                                models we care about, so instead we
-                                estimate it by evaluating the model over
-                                many contexts. In each context we
+                                average Jacobian over all contexts
+                                exactly is intractable for the models we
+                                care about, so instead we estimate it by
+                                evaluating the model over many contexts,
+                                backpropagating from
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mi>L</mi></msub><annotation encoding="application/x-tex">\mathbf{h}_L</annotation></semantics></math>
+                                at the current token position and
+                                subsequent token positions to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>,
+                                and taking an average.</p>
+                                <p>For intuition though, it’s helpful to
+                                think about the effect of small
+                                perturbations of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>.
+                                Over a large number of contexts we could
                                 perturb
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
                                 by some small amount
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><msub><mi>𝐞</mi><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">\varepsilon \mathbf{e}_c</annotation></semantics></math>,
                                 then take the mean of differences</p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>+</mo><mi>ε</mi><msub><mi>𝐞</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mi>ε</mi></mfrac><annotation encoding="application/x-tex">\frac{F_{l+1:L}(\mathbf{h}_{\ell} + \varepsilon \mathbf{e}_c) - F_{l+1:L}(\mathbf{h}_{\ell})}{\varepsilon}</annotation></semantics></math></p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>+</mo><mi>ε</mi><msub><mi>𝐞</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mi>ε</mi></mfrac><annotation encoding="application/x-tex">\frac{F_{\ell+1:L}(\mathbf{h}_{\ell} + \varepsilon \mathbf{e}_c) - F_{\ell+1:L}(\mathbf{h}_{\ell})}{\varepsilon}</annotation></semantics></math></p>
                                 <p>as the “average linearised effect of
                                 an activation on the model’s likelihood
                                 of producing a particular token”.
@@ -561,21 +575,24 @@
                                 <figure class="lens-diagram j-lens-figure">
                                   <iframe id="j-lens-figure" src="../resource/lens-zoo/j-lens.svg#average-1" title="J-lens diagram: Average effects, Context 1"></iframe>
                                 </figure>
-                                <p>We’ll call the space with basis given
-                                by the columns of
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐉</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathbf{J}^{-1} \mathbf{W}^{-1}_U</annotation></semantics></math><a
-                                href="#fn4" class="footnote-ref"
-                                id="fnref4"
-                                role="doc-noteref"><sup>4</sup></a> the
-                                J-space.</p>
+                                <p>We’ll call the space with “basis”
+                                given by the rows of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>𝐔</mi></msub><mi>𝐉</mi></mrow><annotation encoding="application/x-tex">\mathbf{W_U} \mathbf{J}</annotation></semantics></math>
+                                the J-space. Actually, the rows of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>𝐔</mi></msub><mi>𝐉</mi></mrow><annotation encoding="application/x-tex">\mathbf{W_U} \mathbf{J}</annotation></semantics></math>
+                                form an overcomplete set, but if we say
+                                that the J-space is the set of sparse,
+                                non negative combinations of those rows,
+                                then we get something that looks like a
+                                high-dimensional space.</p>
                                 <p>Empirically, the J-space acts like a
                                 workspace. Intervening on
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
-                                by adding/subtracting J-space basis
-                                vectors to it affects the model’s output
-                                the way we’d expect it to if the J-space
-                                were a global workspace, and the model
-                                can “introspect” on the concepts in its
+                                by adding/subtracting J-lens vectors to
+                                it affects the model’s output the way
+                                we’d expect it to if the J-space were a
+                                global workspace, and the model can
+                                “introspect” on the concepts in its
                                 J-space, and manipulate them on
                                 command.</p>
                                 <p>Why would we expect the J-lens to
@@ -583,9 +600,8 @@
                                 workspace</em>?</p>
                                 <ul>
                                 <li><p>J-space vectors can represent
-                                intermediate steps without steering the
-                                best-guess
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>h</mi><mi>l</mi></msub><annotation encoding="application/x-tex">h_l</annotation></semantics></math>
+                                intermediate steps without steering
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>h</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">h_\ell</annotation></semantics></math>
                                 towards the intermediate step’s token.
                                 We already saw this is a desideratum
                                 that <a href="#logit-lens">logit</a> and
@@ -605,10 +621,9 @@
                                 lens</a>, <a href="#r-lens">r-lens</a>,
                                 <a href="#chain-lens">chain lens</a>, <a
                                 href="#j-plus-plus-lens">j++ lens</a>,
-                                <a href="#k-lens">k-lens</a>, <a
+                                <a href="#k-lens">k-lens</a>, or <a
                                 href="#omega-j-lenses"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
-                                lenses</a>, or <a
-                                href="#a-lens">a-lens</a>.
+                                lenses</a>.
                                 </dd>
                                 </dl>
                                 </section>
@@ -660,12 +675,12 @@
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐲</mi><mn>2</mn></msub><mo>=</mo><mi>𝐲</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒞</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{y}_2 = \mathbf{y}(\mathcal{C}_2)</annotation></semantics></math>
                                 is. This is plausible, since remaining
                                 layers,
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{l+1:L}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{\ell+1:L}</annotation></semantics></math>,
                                 are able to understand the contents of
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒞</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{h}_{\ell}(\mathcal{C}_1)</annotation></semantics></math>
                                 and output differently based on this.
                                 However,
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{l+1:L}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{\ell+1:L}</annotation></semantics></math>
                                 is also dependent on
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒞</mi><mn>2</mn></msub><mo>≠</mo><msub><mi>𝒞</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">\mathcal{C}_2 \ne \mathcal{C}_1</annotation></semantics></math>.
                                 The conflicting context prevents the
@@ -693,16 +708,17 @@
                                 will be optimised to only contain
                                 information which helps generalised
                                 prediction capability like “output
-                                gramatically correct text” and therefore
-                                the output on the soft prompt + unseen
-                                activation is only a function of the
-                                unseen activation.</p>
+                                grammatically correct text” or “output
+                                more common words instead of rarer ones”
+                                and therefore the output on the soft
+                                prompt + unseen activation is only a
+                                function of the unseen activation.</p>
                                 <p>The future lens also nicely
                                 generalises to multi-token readouts. On
-                                decoding further tokens we give the the
-                                soft prompt concatenated with the
-                                earlier decoded tokens and perform the
-                                same hidden state intervention:</p>
+                                decoding further tokens we give the soft
+                                prompt concatenated with the earlier
+                                decoded tokens and perform the same
+                                hidden state intervention:</p>
                                 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>t</mi><mo accent="true">̂</mo></mover><mi>k</mi></msub><mo>=</mo><mo>Next</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒫</mi><mi>θ</mi></msub><mo>‖</mo><msub><mover><mi>t</mi><mo accent="true">̂</mo></mover><mrow><mo>&lt;</mo><mi>k</mi></mrow></msub><mo>;</mo><mspace width="0.167em"></mspace><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>←</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒞</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>k</mi><mo>≥</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex"> 
                                 \hat t_k =
                                 \operatorname{Next}\!\left(
@@ -740,7 +756,7 @@
                                 other examples later.</p>
                                 <p>The future lens is in principle not a
                                 workspace lens.
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{l+1:L}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><annotation encoding="application/x-tex">F_{\ell+1:L}</annotation></semantics></math>
                                 might contain circuits that the injected
                                 residual-stream vector happens to
                                 contain the global workspace inputs for.
@@ -760,12 +776,9 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://transformer-circuits.pub/2026/workspace/">Verbalizable
+                                href="https://transformer-circuits.pub/2026/workspace/#app-template-lens">Verbalizable
                                 Representations Form a Global Workspace
                                 in Language Models</a>, Anthropic (2026)
-                                TODO further reading should link to the
-                                appendix in which template lens is
-                                defined
                                 </dd>
                                 </dl>
                                 <p>The output of the J-lens is
@@ -802,20 +815,20 @@
                                 follows:</p>
                                 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">TemplateLens</mtext><mo>ℓ</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mi>𝐓</mi><mo>ℓ</mo><mi>⊤</mi></msubsup><mi>𝐱</mi></mrow><annotation encoding="application/x-tex">\text{TemplateLens}_\ell(\mathbf{x}) = \mathbf{T}_\ell^\top \mathbf{x}</annotation></semantics></math></p>
                                 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐓</mi><mo>ℓ</mo></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>𝐭</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mi>⋯</mi><mspace width="0.222em"></mspace><msub><mi>𝐭</mi><mi>D</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{T}_\ell = \left[\mathbf{t}_1(\ell)\ \cdots\ \mathbf{t}_D(\ell)\right]</annotation></semantics></math></p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐭</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝚺</mi><mo>ℓ</mo></msub><mo>+</mo><mi>λ</mi><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝛍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{t}_i(\ell) = (\mathbf{\Sigma}_\ell + \lambda I)^{-1}(\mathbf{\mu}_i(\ell) - \mathbf{\mu}(\ell))</annotation></semantics></math></p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐭</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝚺</mi><mo>ℓ</mo></msub><mo>+</mo><mi>λ</mi><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝛍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{t}_i(\ell) = (\mathbf{\Sigma}_\ell + \lambda I)^{-1}(\mathbf{\mu}_i(\ell) - \mathbf{\mu}(\ell))</annotation></semantics></math></p>
                                 <p>Essentially, we compare how similar
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
                                 is to the difference-in-mean-activations
                                 for a given concept
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi><mo>=</mo><msub><mi>𝛍</mi><mi>i</mi></msub><mo>−</mo><mi>𝛍</mi></mrow><annotation encoding="application/x-tex">\Delta\mathbf{\mu} = \mathbf{\mu}_i - \mathbf{\mu}</annotation></semantics></math>.
-                                We <em>whiten</em><a href="#fn5"
-                                class="footnote-ref" id="fnref5"
-                                role="doc-noteref"><sup>5</sup></a>
+                                We <em>whiten</em><a href="#fn4"
+                                class="footnote-ref" id="fnref4"
+                                role="doc-noteref"><sup>4</sup></a>
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
                                 and
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛍</mi><annotation encoding="application/x-tex">\mathbf{\mu}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi></mrow><annotation encoding="application/x-tex">\Delta\mathbf{\mu}</annotation></semantics></math>
                                 to account for the fact that some
-                                directions have lower covariance than
+                                directions have lower variance than
                                 others, so in those directions a larger
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
                                 or
@@ -838,17 +851,130 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://www.lesswrong.com/posts/nv8oedrnLXKRzNEL9/r-lens-making-j-lens-more-faithful-on-early-layers#:~:text=Methods%3A%20the%20R%2DLens">R-lens:
+                                href="https://www.lesswrong.com/posts/nv8oedrnLXKRzNEL9/r-lens-making-j-lens-more-faithful-on-early-layers#Methods__the_R_Lens">R-lens:
                                 Making J-lens More Faithful on Early
                                 Layers</a>, <code>camilablank</code>
                                 <em>et al.</em> (2026)
                                 </dd>
+                                </dl>
+                                <p>The R-lens is a modification to the
+                                J-lens which uses <em>Layerwise
+                                Relevance Propagation</em> instead of
+                                backpropagation. I’ll focus on intuition
+                                &amp; differences in modelling
+                                assumptions between the J-lens and
+                                R-lens, because the implementation is
+                                not very illuminating in my opinion.
+                                Importantly, the R-lens has improved
+                                empirical performance in early layers
+                                compared to the J-lens. It’s since been
+                                outperformed by the J++, which also uses
+                                relevance propagation.</p>
+                                <p>I have two basic intuitions for why
+                                LRP might be better to use than
+                                good-old-fashioned backprop.</p>
+                                <section id="denoising-gradients"
+                                class="level3">
+                                <h3>1. denoising gradients</h3>
+                                <p>LRP can be thought of as a
+                                modification of backpropagation. It
+                                might stop / downweight gradient terms
+                                where we’d have a systematically wrong
+                                approximation of finite differences in
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mi>L</mi></msub><annotation encoding="application/x-tex">\mathbf{h}_L</annotation></semantics></math>
+                                given
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mi>L</mi></msub></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow></mfrac><annotation encoding="application/x-tex">\frac{\partial \mathbf{h}_L}{\partial \mathbf{h}_{\ell}}</annotation></semantics></math>
+                                alone. This reduces their effect on the
+                                estimate of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐉</mi><annotation encoding="application/x-tex">\mathbf{J}</annotation></semantics></math>.
+                                Therefore our estimate of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐉</mi><annotation encoding="application/x-tex">\mathbf{J}</annotation></semantics></math>
+                                using LRP should work better to
+                                approximate finite differences.</p>
+                                </section>
+                                <section
+                                id="sensitivity-vs-contribution"
+                                class="level3">
+                                <h3>2. sensitivity vs contribution</h3>
+                                <p>Contribution is defined fairly
+                                intuitively: if
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mn>6</mn><mi>a</mi><mo>−</mo><mn>7</mn><mi>b</mi><mo>+</mo><mi>c</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">y = 6a - 7b + cd</annotation></semantics></math>,
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+                                contributes
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mi>a</mi></mrow><annotation encoding="application/x-tex">6a</annotation></semantics></math>,
+                                and
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+                                contributes
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>7</mn><mi>b</mi></mrow><annotation encoding="application/x-tex">-7b</annotation></semantics></math>.
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+                                and
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+                                both contribute
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>c</mi><mi>d</mi></mrow><mn>2</mn></mfrac><annotation encoding="application/x-tex">\frac{cd}{2}</annotation></semantics></math>.</p>
+                                <p>On the other hand, the sensitivity of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+                                to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+                                tells us how a change in
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+                                affects
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>.
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>’s
+                                sensitivity to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+                                is entirely described by
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>∂</mi><mi>y</mi></mrow><mrow><mi>∂</mi><mi>a</mi></mrow></mfrac><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">\frac{\partial y}{\partial a} = 6</annotation></semantics></math>,
+                                etc. In general, the sensitivity of an
+                                output to an input is described by the
+                                (potentially infinite) sequence of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>-th
+                                derivatives, and might be dependent on
+                                other inputs (consider
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>∂</mi><mi>y</mi></mrow><mrow><mi>∂</mi><mi>c</mi></mrow></mfrac><annotation encoding="application/x-tex">\frac{\partial y}{\partial c}</annotation></semantics></math>).</p>
+                                <p>It turns out that if we replace
+                                backprop with LRP in our J-lens
+                                estimation process, instead of a matrix
+                                (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐉</mi><annotation encoding="application/x-tex">\mathbf{J}</annotation></semantics></math>)
+                                telling us the average first order
+                                sensitivity of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mi>L</mi></msub><annotation encoding="application/x-tex">\mathbf{h}_L</annotation></semantics></math>
+                                to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>,
+                                we get a matrix
+                                (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐑</mi><annotation encoding="application/x-tex">\mathbf{R}</annotation></semantics></math>)
+                                telling us the average
+                                <em>contribution</em> of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
+                                to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mi>L</mi></msub><annotation encoding="application/x-tex">\mathbf{h}_L</annotation></semantics></math>.</p>
+                                <p>In principle,
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐑</mi><annotation encoding="application/x-tex">\mathbf{R}</annotation></semantics></math>
+                                can model the average contributions
+                                entirely, whereas
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐉</mi><annotation encoding="application/x-tex">\mathbf{J}</annotation></semantics></math>
+                                can only ever model the average
+                                first-order sensitivity. It could be
+                                that for our purposes, a complete model
+                                of average contributions is better than
+                                an incomplete model of average
+                                sensitivity, even though our intuition
+                                from the J-lens was that the concept of
+                                sensitivity better captures what we want
+                                a good lens to read:</p>
+                                <blockquote>
+                                <p>…how a direction in the residual
+                                stream tends to change the token
+                                distribution, averaged over many
+                                contexts, tells us its meaning.</p>
+                                </blockquote>
+                                <dl>
                                 <dt>next:</dt>
                                 <dd>
                                 <a href="#j-plus-plus-lens">j++ lens</a>
-                                or <a href="#s-lens">s lens ?!</a>.
+                                or <a href="#s-lens">s-lens</a>.
                                 </dd>
                                 </dl>
+                                </section>
                                 </section>
                                 <section id="chain-lens" class="level2">
                                 <h2>chain lens</h2>
@@ -861,7 +987,7 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://www.lesswrong.com/posts/Nr6fksEqqxNpdz6rk/the-chain-lens-interim">The
+                                href="https://www.lesswrong.com/posts/Nr6fksEqqxNpdz6rk/the-chain-lens-interim#Method">The
                                 Chain Lens [interim]</a>, Vogel and
                                 Douglas (2026)
                                 </dd>
@@ -869,15 +995,15 @@
                                 <p>The chain lens is a straightforward
                                 improvement on the J-lens which uses
                                 multi-token prediction heads<a
-                                href="#fn6" class="footnote-ref"
-                                id="fnref6"
-                                role="doc-noteref"><sup>6</sup></a> with
-                                contrastive decoding<a href="#fn7"
-                                class="footnote-ref" id="fnref7"
-                                role="doc-noteref"><sup>7</sup></a> to
+                                href="#fn5" class="footnote-ref"
+                                id="fnref5"
+                                role="doc-noteref"><sup>5</sup></a> with
+                                contrastive decoding<a href="#fn6"
+                                class="footnote-ref" id="fnref6"
+                                role="doc-noteref"><sup>6</sup></a> to
                                 elicit multi-token predictions from the
                                 J-lens.</p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ChainLens</mo><mi>l</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>MultiTokenPrediction</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐉</mi><mrow><mi>l</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \operatorname{ChainLens}_l(\mathbf{h}_{\ell}) = \operatorname{MultiTokenPrediction}(\mathbf{J}_{l+1:L}\mathbf{h}_{\ell})</annotation></semantics></math></p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ChainLens</mo><mo>ℓ</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>MultiTokenPrediction</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐉</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \operatorname{ChainLens}_\ell(\mathbf{h}_{\ell}) = \operatorname{MultiTokenPrediction}(\mathbf{J}_{\ell+1:L}\mathbf{h}_{\ell})</annotation></semantics></math></p>
                                 </section>
                                 <section id="j-plus-plus-lens"
                                 class="level2">
@@ -891,12 +1017,107 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#:~:text=We%20introduce%20the%20J%2B%2B%20Lens%2C%20which%20improves">J++
+                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses">J++
                                 Lens: Jacobian Filtering Enables More
                                 Faithful Workspace Lenses</a>, Ayonrinde
                                 and Lindsey (2026)
                                 </dd>
                                 </dl>
+                                <p>The J++ lens is another J-lens
+                                variant, incorporating LRP as introduced
+                                by the R-lens. Importantly, the J++ lens
+                                does <em>Jacobian Filtering</em>. Also,
+                                the J++-lens restricts its readouts to
+                                tokens with semantic meaning (“readout
+                                filtering” in the jargon of the
+                                paper).</p>
+                                <p>The core idea for Jacobian filtering
+                                is quite simple. We first partition the
+                                activation space into
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+                                subsets
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>1</mn></msub><annotation encoding="application/x-tex">C_1</annotation></semantics></math>
+                                through
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>E</mi></msub><annotation encoding="application/x-tex">C_E</annotation></semantics></math>.
+                                We then fit Jacobians
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐉</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{J}_i</annotation></semantics></math>
+                                for each
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>i</mi></msub><annotation encoding="application/x-tex">C_i</annotation></semantics></math>,
+                                by using the same procedure as the
+                                R-lens but restricted to average
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mi>L</mi></msub></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow></mfrac><annotation encoding="application/x-tex">\frac{\partial \mathbf{h}_L}{\partial \mathbf{h}_{\ell}}</annotation></semantics></math>
+                                for
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>∈</mo><msub><mi>C</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\mathbf{h}_{\ell} \in C_i</annotation></semantics></math>.
+                                These Jacobians are referred to as
+                                “expert” Jacobians, by analogy to the
+                                mixture of experts architecture in
+                                transformers<a href="#fn7"
+                                class="footnote-ref" id="fnref7"
+                                role="doc-noteref"><sup>7</sup></a>. We
+                                create a benchmark of latent-variable
+                                extraction problems (like the example in
+                                the penultimate paragraph of the <a
+                                href="#logit-lens">logit lens</a>
+                                section) to test how well the lens
+                                accesses the model’s workspace, and then
+                                optimise weights
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math>
+                                for each
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐉</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{J}_i</annotation></semantics></math>
+                                so that
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><msub><mi>𝐉</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sum_i w_i \mathbf{J}_i</annotation></semantics></math>
+                                has good performance on this
+                                benchmark.</p>
+                                <p>The authors show empirically that
+                                Jacobian filtering is responsible for
+                                most of the J++ lens’ uplift over the J
+                                and R lenses<a href="#fn8"
+                                class="footnote-ref" id="fnref8"
+                                role="doc-noteref"><sup>8</sup></a>.</p>
+                                <p>This makes sense, because we chose
+                                weights that perform well on our
+                                benchmark. If we assume that some noisy
+                                components are responsible for making
+                                the J-lens perform poorly, then
+                                downweighting or zeroing the noisy
+                                components should make the lens perform
+                                better. The authors find some evidence
+                                for this; removing the worst-performing
+                                experts from the R-lens improves
+                                performance<a href="#fn9"
+                                class="footnote-ref" id="fnref9"
+                                role="doc-noteref"><sup>9</sup></a>, and
+                                the single best expert recovers most of
+                                the uplift of the J++-lens<a
+                                href="#fn10" class="footnote-ref"
+                                id="fnref10"
+                                role="doc-noteref"><sup>10</sup></a>.
+                                However, it’s not so clear to me what
+                                mechanism explains the rest of the
+                                uplift.</p>
+                                <p>You could argue there is potential
+                                for overfitting
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>w</mi><mi>i</mi></msub><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>E</mi></msubsup></mrow><annotation encoding="application/x-tex">\{w_i\}_{i=1}^{E}</annotation></semantics></math>.
+                                Empirically, this doesn’t seem to be the
+                                case<a href="#fn11" class="footnote-ref"
+                                id="fnref11"
+                                role="doc-noteref"><sup>11</sup></a>. In
+                                this case, if the activation space
+                                partition
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>C</mi><mi>i</mi></msub><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>E</mi></msubsup></mrow><annotation encoding="application/x-tex">\{C_i\}_{i=1}^{E}</annotation></semantics></math>
+                                is sufficiently coarse, it is unlikely
+                                that the weights have enough capacity to
+                                overfit to the training benchmark.</p>
+                                <p>The authors also explore some
+                                hypotheses as to why some expert
+                                Jacobians are worse than others. They
+                                find some evidence that the poorly
+                                performing experts were more often fit
+                                on non-semantic tokens<a href="#fn12"
+                                class="footnote-ref" id="fnref12"
+                                role="doc-noteref"><sup>12</sup></a>,
+                                although this doesn’t exclusively
+                                explain the bad experts.</p>
                                 </section>
                                 <section id="oracle-lens"
                                 class="level2">
@@ -910,11 +1131,165 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://transformer-circuits.pub/2026/workspace/#:~:text=The%20template%20lens%20requires%20its%20vocabulary">Verbalizable
+                                href="https://transformer-circuits.pub/2026/workspace/#app-oracle-lens">Verbalizable
                                 Representations Form a Global Workspace
                                 in Language Models</a>, Anthropic (2026)
                                 </dd>
                                 </dl>
+                                <p>The oracle lens is another lens from
+                                Anthropic’s <em>Global Workspace</em>
+                                paper, but it’s quite a bit more
+                                elaborate than the J-lens and template
+                                lens, using a pipeline of
+                                self-supervised models to recover
+                                arbitrary multi-token phrases from a
+                                residual-stream vector.</p>
+                                <p>First, we train a
+                                <em>reconstructor</em>. This is a copy
+                                of our base model fine-tuned to map a
+                                short<a href="#fn13"
+                                class="footnote-ref" id="fnref13"
+                                role="doc-noteref"><sup>13</sup></a>
+                                phrase of text to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐫</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{r}_{\ell}</annotation></semantics></math>,
+                                an activation vector which is ideally
+                                equal to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>.
+                                We sample
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>
+                                at the token position immediately before
+                                the phrase.</p>
+                                <figure class="lens-diagram" style="--diagram-fit-width: 620; --diagram-fit-height: 312;">
+                                <iframe src="../resource/lens-zoo/oracle-training.svg" title="Oracle teacher and reconstructor training">
+                                </iframe>
+                                </figure>
+                                <p>Like in the template lens, our
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐫</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{r}_{\ell}</annotation></semantics></math>s
+                                and
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>s
+                                are whitened so that errors in
+                                directions which typically vary less are
+                                up-weighted and vice-versa. I won’t keep
+                                mentioning whitening explicitly since
+                                it’s not that consequential to
+                                understanding how the lens works, but
+                                it’s used consistently throughout the
+                                process.</p>
+                                <p>Next, we build a list of multi-token
+                                phrases sampled from model-generated
+                                text (you can read the Anthropic paper
+                                for more detail on how exactly this is
+                                done). We’ll then pass our phrases
+                                through the reconstructor model to
+                                produce a dictionary mapping phrases to
+                                phrase vectors.</p>
+                                <p>The dictionary of phrase vectors is
+                                used to label unseen activations from
+                                the model while it is generating text in
+                                the <code>&lt;|assistant|&gt;</code>
+                                turn. We ‘decompose’ these activations
+                                into an ordered list of (at most)
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+                                phrase vectors from our dictionary which
+                                hopefully explain the variance of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>.</p>
+                                <details class="dropdown">
+                                <summary>how does the decomposition
+                                work?</summary>
+                                <div>
+                                <p>The algorithm for decomposing an
+                                activation vector into phrase vectors
+                                looks like this:</p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">Input: activation </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mphantom><mrow><mtext mathvariant="normal">Input: </mtext><mspace width="0.333em"></mspace></mrow></mphantom><mrow><mtext mathvariant="normal">dictionary </mtext><mspace width="0.333em"></mspace></mrow><mi>D</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> of phrases with length </mtext><mspace width="0.333em"></mspace></mrow><mi>N</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mphantom><mrow><mtext mathvariant="normal">Input: </mtext><mspace width="0.333em"></mspace></mrow></mphantom><mrow><mtext mathvariant="normal">maximum number of phrases </mtext><mspace width="0.333em"></mspace></mrow><mi>k</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">Sample </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>⊆</mo><mi>D</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> uniformly subject to </mtext><mspace width="0.333em"></mspace></mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>S</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">|</mo><mi>D</mi><mo stretchy="true" form="postfix">|</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>𝛅</mi><mo>←</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>w</mi><mrow><mn>1</mn><mo>:</mo><mi>k</mi></mrow></msub><mo>←</mo><mn>𝟎</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="bold">𝐟𝐨𝐫 </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>k</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐝𝐨</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mrow><mtext mathvariant="bold">𝐢𝐟 </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>=</mo><mi>⌀</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> or </mtext><mspace width="0.333em"></mspace></mrow><mi>𝛅</mi><mo>=</mo><mn>𝟎</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐭𝐡𝐞𝐧 𝐛𝐫𝐞𝐚𝐤</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><msub><mi>𝐯</mi><mi>i</mi></msub><mo>←</mo><munder><mo>arg max</mo><mrow><mi>𝐯</mi><mo>∈</mo><mi>S</mi></mrow></munder><mfrac><mrow><msup><mi>𝐯</mi><mi>⊤</mi></msup><mi>𝛅</mi></mrow><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>𝐯</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>2</mn></msub><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>𝛅</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>2</mn></msub></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mrow><mtext mathvariant="bold">𝐢𝐟 </mtext><mspace width="0.333em"></mspace></mrow><msubsup><mi>𝐯</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛅</mi><mo>≤</mo><mn>0</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐭𝐡𝐞𝐧 𝐛𝐫𝐞𝐚𝐤</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mi>S</mi><mo>←</mo><mi>S</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>𝐯</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><msub><mi>w</mi><mrow><mn>1</mn><mo>:</mo><mi>i</mi></mrow></msub><mo>←</mo><munder><mo>arg min</mo><mrow><mi>u</mi><mo>∈</mo><msubsup><mi>ℝ</mi><mrow><mo>≥</mo><mn>0</mn></mrow><mi>i</mi></msubsup></mrow></munder><msubsup><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>−</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><msub><mi>u</mi><mi>j</mi></msub><msub><mi>𝐯</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn><mn>2</mn></msubsup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mi>𝛅</mi><mo>←</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>−</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><msub><mi>w</mi><mi>j</mi></msub><msub><mi>𝐯</mi><mi>j</mi></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="bold">𝐞𝐧𝐝 𝐟𝐨𝐫</mtext></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="bold">𝐫𝐞𝐭𝐮𝐫𝐧 </mtext><mspace width="0.333em"></mspace></mrow><mrow><mtext mathvariant="normal">the pairs </mtext><mspace width="0.333em"></mspace></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>w</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐯</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> in increasing order of </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+                                \begin{aligned}
+                                &amp;\text{Input: activation } \mathbf{h}_\ell \\
+                                &amp;\phantom{\text{Input: }}\text{dictionary } D \text{ of phrases with length } N \\
+                                &amp;\phantom{\text{Input: }}\text{maximum number of phrases } k \\
+                                &amp;\text{Sample } S \subseteq D \text{ uniformly subject to } |S|=\tfrac12|D| \\
+                                &amp;\boldsymbol{\delta} \gets \mathbf{h}_\ell,\qquad w_{1:k} \gets \mathbf{0} \\
+                                &amp;\textbf{for } i=1,\ldots,k \textbf{ do} \\
+                                &amp;\qquad \textbf{if } S=\varnothing \text{ or } \boldsymbol{\delta}=\mathbf{0} \textbf{ then break} \\
+                                &amp;\qquad \mathbf{v}_i \gets \operatorname*{arg\,max}_{\mathbf{v}\in S}
+                                    \frac{\mathbf{v}^\top\boldsymbol{\delta}}{\lVert \mathbf{v}\rVert_2\lVert\boldsymbol{\delta}\rVert_2} \\
+                                &amp;\qquad \textbf{if } \mathbf{v}_i^\top\boldsymbol{\delta}\le 0 \textbf{ then break} \\
+                                &amp;\qquad S \gets S\setminus\{\mathbf{v}_i\} \\
+                                &amp;\qquad w_{1:i} \gets \operatorname*{arg\,min}_{u\in\mathbb{R}_{\ge 0}^{i}}
+                                    \left\lVert \mathbf{h}_\ell-\sum_{j=1}^{i}u_j\mathbf{v}_j\right\rVert_2^2 \\
+                                &amp;\qquad \boldsymbol{\delta} \gets \mathbf{h}_\ell-\sum_{j=1}^{i}w_j\mathbf{v}_j \\
+                                &amp;\textbf{end for} \\
+                                &amp;\textbf{return } \text{the pairs } (w_i, \mathbf{v}_i) \text{ in increasing order of } i
+                                \end{aligned}
+                                </annotation></semantics></math></p>
+                                <p><a
+                                href="https://en.wikipedia.org/wiki/Matching_pursuit"
+                                class="uri">https://en.wikipedia.org/wiki/Matching_pursuit</a></p>
+                                </div>
+                                </details>
+                                <p>Finally, we train an <em>oracle</em>:
+                                yet another fine-tuned copy of our base
+                                model, which will reproduce our
+                                phrase-vector lists given an injected
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>,
+                                and a prompt including
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>,
+                                the desired phrase length, and
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>,
+                                the desired number of phrases in the
+                                phrase-vector list. The oracle’s
+                                training target is the first
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+                                phrase-vectors corresponding to phrases
+                                of length
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+                                generated by our “teacher”, the
+                                decomposition algorithm. The
+                                rank-ordering produced by the oracle
+                                ideally matches the teacher’s order.</p>
+                                <figure class="lens-diagram" style="--diagram-fit-width: 628; --diagram-fit-height: 400;">
+                                <iframe src="../resource/lens-zoo/oracle-injection.svg" title="Oracle self-supervised training">
+                                </iframe>
+                                </figure>
+                                <p>This might seem pointless, since at
+                                best the oracle will match the
+                                performance of the decomposition
+                                algorithm. However, after this
+                                self-supervised fine-tuning step, we
+                                further RL-train our oracle model on new
+                                assistant-turn activations to maximise
+                                the fraction of activation variance its
+                                reconstructions explain. There are also
+                                slight penalties for high phrase count
+                                and deviating from the target phrase
+                                count and phrase length given in the
+                                prompt.</p>
+                                <figure class="lens-diagram" style="--diagram-fit-width: 544; --diagram-fit-height: 558;">
+                                <iframe src="../resource/lens-zoo/oracle-inference.svg" title="Oracle lens inference">
+                                </iframe>
+                                </figure>
+                                <p>At inference-time we:</p>
+                                <ol type="1">
+                                <li><p>Sample
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
+                                of interest from the base
+                                model.</p></li>
+                                <li><p>Inject
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
+                                into our oracle and sample
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+                                phrases from the oracle’s phrase
+                                list.</p></li>
+                                <li><p>Map each oracle-generated phrase
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐩</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{p}_i</annotation></semantics></math>
+                                to an activation direction
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐫</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{r}_i</annotation></semantics></math>
+                                using the reconstructor.</p></li>
+                                <li><p>Choose non-negative coefficients
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math>
+                                so that
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><msub><mi>𝐫</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sum_i w_i\mathbf{r}_i</annotation></semantics></math>
+                                is as close as possible to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>.</p></li>
+                                </ol>
                                 </section>
                                 <section id="omnilens" class="level2">
                                 <h2>omnilens</h2>
@@ -944,7 +1319,7 @@
                                 <dt>further reading:</dt>
                                 <dd>
                                 <a
-                                href="https://www.goodfire.com/research/interpreting-inkling-2-mini#:~:text=Decoding%20loops%3A%20logit%2Dlens%2C%20tuned%2Dlens%2C%20coda%2Dlens">Interpreting
+                                href="https://www.goodfire.com/research/interpreting-inkling-2-mini#decoding-loops-logit-lens-tuned-lens-coda-lens">Interpreting
                                 Inkling 2 Mini</a>, Lee <em>et al.</em>
                                 (2026)
                                 </dd>
@@ -970,7 +1345,11 @@
                                 in the same manner as the last few
                                 transformer blocks are cut out for the
                                 logit lens), and applies the coda to
-                                read out the inter-pass state.</p>
+                                read out the inter-pass state. Note that
+                                the coda can attend to prior tokens and
+                                is therefore not exclusively a function
+                                of the inter-pass hidden state at the
+                                current token position.</p>
                                 <p>This method is useful as a starting
                                 point to interpret what computation is
                                 being done in subsequent passes, but is
@@ -1003,29 +1382,64 @@
                                 <p>The K-lens is a natural extension of
                                 the J-lens. Instead of finding the
                                 Jacobian
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mi>L</mi></msub></mrow><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mfrac><annotation encoding="application/x-tex">\frac{\partial \mathbf{h}_L}{\mathbf{h}_{\ell}}</annotation></semantics></math>,
-                                we find the Jacobian transpose from
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mn>0</mn></msub></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow></mfrac><annotation encoding="application/x-tex">\frac{\partial \mathbf{h}_0}{\partial \mathbf{h}_{\ell}}</annotation></semantics></math>:</p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mn>0</mn></msub></mrow><mrow><mi>∂</mi><msub><mi>F</mi><mrow><mn>1</mn><mo>:</mo><mi>l</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><msubsup><mi>𝐖</mi><mi>E</mi><mi>⊤</mi></msubsup><mo>=</mo><msup><mi>𝐊</mi><mi>⊤</mi></msup><msubsup><mi>𝐖</mi><mi>E</mi><mi>⊤</mi></msubsup></mrow><annotation encoding="application/x-tex">\frac{\partial \mathbf{h}_0}{\partial F_{1:l}(\mathbf{h}_0)} \mathbf{W}^{\top}_E = \mathbf{K}^{\top}\mathbf{W}^{\top}_E</annotation></semantics></math></p>
-                                <p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐊</mi><mi>⊤</mi></msup><annotation encoding="application/x-tex">\mathbf{K}^\top</annotation></semantics></math>
-                                is estimated by first estimating
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mi>L</mi></msub></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow></mfrac><annotation encoding="application/x-tex">\frac{\partial \mathbf{h}_L}{\partial \mathbf{h}_{\ell}}</annotation></semantics></math>,
+                                we find the transpose of the Jacobian,
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mn>0</mn></msub></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><annotation encoding="application/x-tex">(\frac{\partial \mathbf{h}_\ell}{\partial \mathbf{h}_{0}})^\top</annotation></semantics></math>:</p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐖</mi><mi>E</mi><mi>⊤</mi></msubsup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>∂</mi><msub><mi>F</mi><mrow><mn>1</mn><mo>:</mo><mo>ℓ</mo></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><msub><mi>𝐡</mi><mn>0</mn></msub></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>=</mo><msubsup><mi>𝐖</mi><mi>E</mi><mi>⊤</mi></msubsup><msup><mi>𝐊</mi><mi>⊤</mi></msup><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><annotation encoding="application/x-tex">\mathbf{W}_E^{\top}\left(\frac{\partial F_{1:\ell}(\mathbf{h}_0)}{\partial \mathbf{h}_0}\right)^{\top}\mathbf{h}_\ell = \mathbf{W}_E^{\top}\mathbf{K}^{\top}\mathbf{h}_\ell</annotation></semantics></math></p>
+                                <details class="dropdown">
+                                <summary>what does the Jacobian
+                                transpose mean? What does
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>𝐖</mi><mi>E</mi><mi>⊤</mi></msubsup><annotation encoding="application/x-tex">\mathbf{W}^{\top}_{E}</annotation></semantics></math>
+                                mean?</summary>
+                                <div>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐊</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mo>↑</mo></mtd><mtd columnalign="center" style="text-align: center"></mtd><mtd columnalign="center" style="text-align: center"><mo>↑</mo></mtd><mtd columnalign="center" style="text-align: center"></mtd><mtd columnalign="center" style="text-align: center"><mo>↑</mo></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><mrow><mi>∂</mi><msub><mi>h</mi><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow></mfrac></mtd><mtd columnalign="center" style="text-align: center"><mi>⋯</mi></mtd><mtd columnalign="center" style="text-align: center"><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><mrow><mi>∂</mi><msub><mi>h</mi><mrow><mn>0</mn><mo>,</mo><mi>j</mi></mrow></msub></mrow></mfrac></mtd><mtd columnalign="center" style="text-align: center"><mi>⋯</mi></mtd><mtd columnalign="center" style="text-align: center"><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><mrow><mi>∂</mi><msub><mi>h</mi><mrow><mn>0</mn><mo>,</mo><msub><mi>d</mi><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow></msub></mrow></msub></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mo>↓</mo></mtd><mtd columnalign="center" style="text-align: center"></mtd><mtd columnalign="center" style="text-align: center"><mo>↓</mo></mtd><mtd columnalign="center" style="text-align: center"></mtd><mtd columnalign="center" style="text-align: center"><mo>↓</mo></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+                                \mathbf{K} =
+                                \left[\begin{array}{ccccc}
+                                \uparrow &amp; &amp; \uparrow &amp; &amp; \uparrow \\
+                                \frac{\partial \mathbf{h}_\ell}{\partial h_{0,1}} &amp; \cdots &amp;
+                                \frac{\partial \mathbf{h}_\ell}{\partial h_{0,j}} &amp; \cdots &amp;
+                                \frac{\partial \mathbf{h}_\ell}{\partial h_{0,d_{model}}} \\
+                                \downarrow &amp; &amp; \downarrow &amp; &amp; \downarrow
+                                \end{array}\right]
+                                </annotation></semantics></math></p>
+                                <p>The
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>-th
+                                element of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐊</mi><mi>⊤</mi></msup><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><annotation encoding="application/x-tex">\mathbf{K}^\top\mathbf{h}_\ell</annotation></semantics></math>
+                                tells us the dot product between the
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>-th
+                                column of
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐊</mi><annotation encoding="application/x-tex">\mathbf{K}</annotation></semantics></math>
-                                in a similar manner to
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐉</mi><annotation encoding="application/x-tex">\mathbf{J}</annotation></semantics></math>:
-                                we perturb
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\mathbf{h}_0</annotation></semantics></math>
-                                and observe its average effects on
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_{\ell}</annotation></semantics></math>
-                                across a range of base contexts. We can
-                                interpret the output of the K-lens as
-                                telling us: comparing a typical
-                                residual-stream vector at this layer
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐯</mi><mi>l</mi></msub><annotation encoding="application/x-tex">\mathbf{v}_l</annotation></semantics></math>
-                                to
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐯</mi><mi>l</mi></msub><mo>+</mo><mi>ε</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><annotation encoding="application/x-tex">\mathbf{v}_l + \varepsilon\mathbf{h}_{\ell}</annotation></semantics></math>,
-                                which input tokens do we need “more” of
-                                in the initial embedding to have caused
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐯</mi><mi>l</mi></msub><mo>+</mo><mi>ε</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><annotation encoding="application/x-tex">\mathbf{v}_l + \varepsilon\mathbf{h}_{\ell}</annotation></semantics></math>?</p>
+                                and
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>.
+                                So
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐊</mi><mi>⊤</mi></msup><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>j</mi></msub><annotation encoding="application/x-tex">(\mathbf{K}^\top\mathbf{h}_\ell)_j</annotation></semantics></math>
+                                is basically telling us how similar
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>
+                                is to
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>∂</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mrow><mrow><mi>∂</mi><msub><mi>h</mi><mrow><mn>0</mn><mo>,</mo><mi>j</mi></mrow></msub></mrow></mfrac><annotation encoding="application/x-tex">\frac{\partial \mathbf{h}_\ell}{\partial h_{0,j}}</annotation></semantics></math></p>
+                                <p>In a similar vein
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐖</mi><mi>E</mi><mi>⊤</mi></msubsup><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>j</mi></msub><annotation encoding="application/x-tex">(\mathbf{W}_E^\top\mathbf{h}_\ell)_j</annotation></semantics></math>
+                                tells us how similar
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>
+                                is to the embedding of the
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>-th
+                                token,
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐖</mi><mi>E</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>:</mo><mo>,</mo><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">(\mathbf{W}_E)_{:,j}</annotation></semantics></math></p>
+                                </div>
+                                </details>
+                                <p>We estimate
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐊</mi><annotation encoding="application/x-tex">\mathbf{K}</annotation></semantics></math>
+                                in the same manner as
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐉</mi><annotation encoding="application/x-tex">\mathbf{J}</annotation></semantics></math>.
+                                We can interpret the output of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>KLens</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{KLens}(\mathbf{h}_\ell)</annotation></semantics></math>
+                                as telling us which input tokens would
+                                push the state at layer
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>
+                                in the direction of
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>
+                                on average.</p>
                                 <figure class="lens-diagram lens-comparison-figure">
                                 <iframe src="../resource/lens-zoo/lens-comparison.svg" title="Comparison of the K-lens and J-lens">
                                 </iframe>
@@ -1080,23 +1494,7 @@
                                 </dd>
                                 </dl>
                                 </section>
-                                <section id="a-lens" class="level2">
-                                <h2>a-lens ?!</h2>
-                                <dl>
-                                <dt>prerequisites:</dt>
-                                <dd>
-                                <a href="#j-lens">j-lens</a>.
-                                </dd>
-                                <dt>further reading:</dt>
-                                <dd>
-                                <a
-                                href="https://github.com/moudrkat/brainscope/blob/main/docs/jlens.md#a-lens-experimental-ours">A-lens
-                                (experimental, ours)</a>, brainscope
-                                (2026)
-                                </dd>
-                                </dl>
-                                </section>
-                                <aside id="footnotes"
+                                <section id="footnotes"
                                 class="footnotes footnotes-end-of-document"
                                 role="doc-endnotes">
                                 <hr />
@@ -1110,20 +1508,24 @@
                                 class="footnote-back"
                                 role="doc-backlink">↩︎</a></p></li>
                                 <li
-                                id="fn2"><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐞</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{e}_i</annotation></semantics></math>
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U\mathbf{v}</annotation></semantics></math>.
+                                id="fn2"><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐞</mi><mi>i</mi></msub><mo>≈</mo><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{e}_i \approx \mathbf{W}_U\mathbf{v}</annotation></semantics></math>.
                                 Suppose there exists some
                                 “inverse-unembedding” matrix
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>:</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> </mtext><mspace width="0.333em"></mspace></mrow><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>𝐖</mi><mi>U</mi></msub><mo>≈</mo><mi>𝕀</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}^{-1}_U: \text{ } \mathbf{W}^{-1}_U \mathbf{W}_U \approx \mathbb{I}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo>:</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> </mtext><mspace width="0.333em"></mspace></mrow><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi>𝐖</mi><mi>U</mi></msub><mo>≈</mo><mi>𝕀</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}^{-1}_U: \text{ } \mathbf{W}^{-1}_U \mathbf{W}_U \approx \mathbb{I}</annotation></semantics></math>
                                 and
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>≈</mo><mi>𝕀</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U \mathbf{W}^{-1}_U \approx \mathbb{I}</annotation></semantics></math>.
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo>≈</mo><mi>𝕀</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U \mathbf{W}^{-1}_U \approx \mathbb{I}</annotation></semantics></math>.
                                 Then
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>𝐞</mi><mi>i</mi></msub><mo>≈</mo><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}^{-1}_U \mathbf{e}_i \approx \mathbf{v}</annotation></semantics></math>,
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi>𝐞</mi><mi>i</mi></msub><mo>≈</mo><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}^{-1}_U \mathbf{e}_i  \approx \mathbf{v}</annotation></semantics></math>,
                                 i.e. the columns of the
                                 “inverse-unembedding” matrix are the
                                 residual vectors that approximately
                                 correspond to each token after
-                                unembedding.<a href="#fnref2"
+                                unembedding. I’ve put
+                                “inverse-unembedding” and “basis” in
+                                scare quotes because I am being sloppy
+                                and hiding some complexity behind the
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math>
+                                sign.<a href="#fnref2"
                                 class="footnote-back"
                                 role="doc-backlink">↩︎</a></p></li>
                                 <li id="fn3"><p>An <em>affine</em>
@@ -1139,26 +1541,7 @@
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐮</mi><mo>=</mo><mi>𝐖</mi><mi>𝐯</mi><mo>+</mo><mi>𝐛</mi></mrow><annotation encoding="application/x-tex">\mathbf{u} = \mathbf{W}\mathbf{v} + \mathbf{b}</annotation></semantics></math><a
                                 href="#fnref3" class="footnote-back"
                                 role="doc-backlink">↩︎</a></p></li>
-                                <li
-                                id="fn4"><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐞</mi><mi>i</mi></msub><mo>≈</mo><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐉</mi><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{e}_i \approx \mathbf{W}_U\mathbf{J}\mathbf{v}</annotation></semantics></math>.
-                                Suppose there exists some
-                                inverse-unembedding matrix and
-                                inverse-Jacobian matrix
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>,</mo><msup><mi>𝐉</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>:</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> </mtext><mspace width="0.333em"></mspace></mrow><msup><mi>𝐉</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐉</mi><mo>≈</mo><mi>𝕀</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}^{-1}_U, \mathbf{J}^{-1}: \text{ } \mathbf{J}^{-1}\mathbf{W}^{-1}_U \mathbf{W}_U \mathbf{J} \approx \mathbb{I}</annotation></semantics></math>
-                                and
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐉</mi><msup><mi>𝐉</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>≈</mo><mi>𝕀</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U \mathbf{J} \mathbf{J}^{-1}\mathbf{W}^{-1}_U \approx \mathbb{I}</annotation></semantics></math>.
-                                Then
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐉</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>𝐞</mi><mi>i</mi></msub><mo>≈</mo><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{J}^{-1}\mathbf{W}^{-1}_U \mathbf{e}_i \approx \mathbf{v}</annotation></semantics></math>
-                                i.e. the columns of
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐉</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>𝐖</mi><mi>U</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathbf{J}^{-1}\mathbf{W}^{-1}_U</annotation></semantics></math>
-                                are the vectors that, on average, after
-                                subsequent transformer layers and
-                                unembedding, only increase the
-                                probability of a specific given token
-                                being output.<a href="#fnref4"
-                                class="footnote-back"
-                                role="doc-backlink">↩︎</a></p></li>
-                                <li id="fn5"><p><a
+                                <li id="fn4"><p><a
                                 href="https://en.wikipedia.org/wiki/Whitening_transformation">en.wikipedia.org/wiki/Whitening_transformation</a>.
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Σ</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\Sigma_\ell</annotation></semantics></math>
                                 is the covariance matrix of
@@ -1172,27 +1555,72 @@
                                 directions with very small variance from
                                 dominating
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t_i(\ell)</annotation></semantics></math>.<a
-                                href="#fnref5" class="footnote-back"
+                                href="#fnref4" class="footnote-back"
                                 role="doc-backlink">↩︎</a></p></li>
-                                <li id="fn6"><p>as the name implies, an
+                                <li id="fn5"><p>as the name implies, an
                                 MTP head allows multiple tokens to be
                                 decoded from a single last-layer
                                 residual
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mi>L</mi></msub><annotation encoding="application/x-tex">\mathbf{h}_L</annotation></semantics></math>.
                                 Introduced by <a
-                                href="https://arxiv.org/pdf/2404.19737">Gloeckle
+                                href="https://arxiv.org/html/2404.19737#S2">Gloeckle
                                 <em>et al.</em></a> (2024)<a
-                                href="#fnref6" class="footnote-back"
+                                href="#fnref5" class="footnote-back"
                                 role="doc-backlink">↩︎</a></p></li>
-                                <li id="fn7"><p>An interesting
+                                <li id="fn6"><p>An interesting
                                 technique, but slightly out of scope for
                                 this post. Introduced by <a
                                 href="https://arxiv.org/abs/2210.15097">Li
                                 <em>et al.</em></a> (2022)<a
+                                href="#fnref6" class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn7"><p><a
+                                href="https://en.wikipedia.org/wiki/Mixture_of_experts">https://en.wikipedia.org/wiki/Mixture_of_experts</a><a
                                 href="#fnref7" class="footnote-back"
                                 role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn8"><p><a
+                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#Appendix_H__Ablations">Appendix
+                                H: Ablations</a>, Figure 18 and Table 4,
+                                “without Jacobian Filtering (Pooled
+                                Jacobian)”.<a href="#fnref8"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn9"><p><a
+                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#Appendix_H__Ablations">Appendix
+                                H: Ablations</a>, Table 4, “Pooled
+                                Jacobian, two worst experts dropped”.<a
+                                href="#fnref9" class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn10"><p><a
+                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#Appendix_H__Ablations">Appendix
+                                H: Ablations</a>, Table 4, “best expert
+                                per layer”.<a href="#fnref10"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn11"><p><a
+                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#Appendix_H__Ablations">Appendix
+                                H: Ablations</a>, Table 4, “leave one
+                                out, dev set has no overlap with
+                                evaluation task”.<a href="#fnref11"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn12"><p><a
+                                href="https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#What_Is_in_the_Bad_Experts_">Appendix
+                                G: What Is in the Bad Experts?</a>,
+                                Figure 13.<a href="#fnref12"
+                                class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
+                                <li id="fn13"><p>phrase length
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+                                is variable, the Anthropic paper says
+                                they sample
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+                                uniformly from
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>,</mo><mn>32</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[1,32]</annotation></semantics></math>.<a
+                                href="#fnref13" class="footnote-back"
+                                role="doc-backlink">↩︎</a></p></li>
                                 </ol>
-                                </aside>
+                                </section>
             </article>
         </main>
         <footer id="footer">

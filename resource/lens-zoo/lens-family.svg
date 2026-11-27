@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
-     viewBox="0 0 1200 617" class="lens-family" role="group" aria-labelledby="lens-family-title" aria-describedby="lens-family-description">
+     viewBox="0 0 1004 617" class="lens-family" role="group" aria-labelledby="lens-family-title" aria-describedby="lens-family-description">
   <title id="lens-family-title">The Logit Lens family tree</title>
-  <desc id="lens-family-description">Arrows run from parent lenses to variants. Future Lens builds on Logit Lens, Tuned Lens. Tuned Lens builds on Logit Lens. J-lens builds on Logit Lens. Coda Lens builds on Logit Lens. OmniLens builds on Tuned Lens. K-lens is the input-side counterpart of J-lens. Template Lens builds on J-lens. R-lens builds on J-lens. ω-J-lenses builds on J-lens. A-lens builds on J-lens. Chain Lens builds on Logit Lens, J-lens. S-lens builds on K-lens, R-lens. Oracle Lens builds on Template Lens. J++ Lens builds on J-lens, R-lens.</desc>
+  <desc id="lens-family-description">Arrows run from parent lenses to variants. Future Lens builds on Logit Lens, Tuned Lens. Tuned Lens builds on Logit Lens. J-lens builds on Logit Lens. Coda Lens builds on Logit Lens. OmniLens builds on Tuned Lens. K-lens is the input-side counterpart of J-lens. Template Lens builds on J-lens. R-lens builds on J-lens. ω-J-lenses builds on J-lens. Chain Lens builds on Logit Lens, J-lens. S-lens builds on K-lens, R-lens. Oracle Lens builds on Template Lens. J++ Lens builds on J-lens, R-lens.</desc>
   <style>
     @font-face {
       font-family: "Latin Modern Sans";
@@ -17,7 +17,7 @@
     .lens-family a:hover rect, .lens-family a:focus rect {stroke: #4dabf7; stroke-width: 2.6;}
   </style>
   <defs><marker id="lens-family-wire-arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 L9 4 L0 8 Z" fill="#b8c7d6"/></marker><marker id="lens-family-muted-arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 L9 4 L0 8 Z" fill="#88939f"/></marker></defs>
-  <rect width="1200" height="617" fill="#121212"/>
+  <rect width="1004" height="617" fill="#121212"/>
   <g fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 <path d="M502 103 L502 136" stroke="#b8c7d6"/>
 <path d="M502 228 L502 344" stroke="#b8c7d6"/>
@@ -25,15 +25,14 @@
 <path d="M306 136 L306 174" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M502 136 L502 174" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M698 136 L698 174" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
-<path d="M502 136 L1110 136 Q1118 136 1118 144 L1118 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
+<path d="M502 136 L914 136 Q922 136 922 144 L922 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M223 201 L193 201" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M306 228 L306 248" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M474 228 L474 310 Q474 318 466 318 L118 318 Q110 318 110 326 L110 368" stroke="#88939f" stroke-dasharray="6 6" marker-end="url(#lens-family-muted-arrow)"/>
 <path d="M502 344 L502 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M502 344 L314 344 Q306 344 306 352 L306 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M698 344 L698 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
-<path d="M894 344 L894 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
-<path d="M502 344 L1054 344 Q1062 344 1062 352 L1062 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
+<path d="M502 344 L858 344 Q866 344 866 352 L866 368" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M404 344 L404 488 Q404 496 396 496 L342 496 Q334 496 334 504 L334 536" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M84 422 L84 536" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
 <path d="M280 422 L280 463 Q280 471 272 471 L144 471 Q136 471 136 479 L136 536" stroke="#b8c7d6" marker-end="url(#lens-family-wire-arrow)"/>
@@ -46,7 +45,6 @@
 <circle cx="404" cy="344" r="2.5" fill="#b8c7d6"/>
 <circle cx="502" cy="344" r="2.5" fill="#b8c7d6"/>
 <circle cx="698" cy="344" r="2.5" fill="#b8c7d6"/>
-<circle cx="894" cy="344" r="2.5" fill="#b8c7d6"/>
   <a href="../../posts/lens-zoo.html#logit-lens" target="_parent" aria-label="Logit Lens">
     <rect x="419" y="49" width="166" height="54"
           rx="4" fill="#203548" stroke="#4dabf7" stroke-width="1.8"/>
@@ -107,16 +105,10 @@
     <text x="698" y="395.0" dy=".33em" text-anchor="middle"
           font-size="20" font-weight="700">ω-J-lenses</text>
   </a>
-  <a href="../../posts/lens-zoo.html#a-lens" target="_parent" aria-label="A-lens">
-    <rect x="811" y="368" width="166" height="54"
-          rx="4" fill="#30243d" stroke="#ba9cdd" stroke-width="1.8"/>
-    <text x="894" y="395.0" dy=".33em" text-anchor="middle"
-          font-size="20" font-weight="700">A-lens</text>
-  </a>
   <a href="../../posts/lens-zoo.html#chain-lens" target="_parent" aria-label="Chain Lens">
-    <rect x="1007" y="368" width="166" height="54"
+    <rect x="811" y="368" width="166" height="54"
           rx="4" fill="#183632" stroke="#73cbbb" stroke-width="1.8"/>
-    <text x="1090" y="395.0" dy=".33em" text-anchor="middle"
+    <text x="894" y="395.0" dy=".33em" text-anchor="middle"
           font-size="20" font-weight="700">Chain Lens</text>
   </a>
   <a href="../../posts/lens-zoo.html#s-lens" target="_parent" aria-label="S-lens">
@@ -138,14 +130,14 @@
           font-size="20" font-weight="700">J++ Lens</text>
   </a>
   <g font-size="18" aria-label="Lens categories">
-    <rect x="885" y="27" width="21" height="19" rx="3"
+    <rect x="689" y="27" width="21" height="19" rx="3"
           fill="#392a18" stroke="#e0ad5e" stroke-width="1.8"/>
-    <text x="917" y="43">Learned translators</text>
-    <rect x="885" y="56" width="21" height="19" rx="3"
+    <text x="721" y="43">Learned translators</text>
+    <rect x="689" y="56" width="21" height="19" rx="3"
           fill="#30243d" stroke="#ba9cdd" stroke-width="1.8"/>
-    <text x="917" y="72">Jacobian-based lenses</text>
-    <rect x="885" y="85" width="21" height="19" rx="3"
+    <text x="721" y="72">Jacobian-based lenses</text>
+    <rect x="689" y="85" width="21" height="19" rx="3"
           fill="#183632" stroke="#73cbbb" stroke-width="1.8"/>
-    <text x="917" y="101">Multi-token readouts</text>
+    <text x="721" y="101">Multi-token readouts</text>
   </g>
 </svg>

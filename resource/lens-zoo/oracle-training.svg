@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 620 312"
+     role="img" aria-labelledby="oracle-title" aria-describedby="oracle-description">
+  <title id="oracle-title">Oracle reconstructor training</title>
+  <desc id="oracle-description">Read the teacher on the left and the reconstructor on the right from bottom to top. The teacher supplies the target hidden state h at layer ell and position t and decodes the first token of the phrase. The next N tokens in the same row form the reconstructor's input phrase. The reconstructor produces r at layer ell from the final phrase token. The loss is the mean squared error between the whitened, unit-normalized target and reconstruction. This loss updates the reconstructor's parameters.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    text { fill: #e0e0e0; font: 16px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .note { fill: #b8c7d6; font-size: 14px; }
+    .math { font-style: italic; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .activation { fill: #203548; stroke: #4dabf7; }
+    .prompt, .loss { fill: #30243d; stroke: #ba9cdd; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .flow { marker-end: url(#arrow); }
+    .decode { stroke: #8090a3; }
+    .decoded-token { opacity: 0.65; }
+    .attention { stroke-dasharray: 4 4; marker-end: url(#attention-head); }
+    .update { stroke: #ba9cdd; marker-end: url(#update-head); }
+    .update-note { fill: #d2bce9; }
+    .phrase { stroke: #ba9cdd; }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="attention-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="7" markerHeight="7"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="decode-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#8090a3"/>
+    </marker>
+    <marker id="update-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#ba9cdd"/>
+    </marker>
+    <rect id="block" class="node" x="180" width="116" height="28" rx="4"/>
+  </defs>
+
+  <path class="wire decode"
+        d="M238 45 V40 C238 6 304 6 304 42 V146
+           M304 164 V255 C304 280 306 298 323 298 C333 298 337 292 339 287"/>
+  <path class="wire decode" d="M340 279 V269" marker-end="url(#decode-head)"/>
+
+  <g>
+    <path class="wire flow" d="M238 241 V215"/>
+    <path class="wire attention" d="M180 194 C124 194 41 206 41 241"/>
+    <path class="wire attention" d="M180 207 C157 207 143 220 143 241"/>
+    <path class="wire attention" d="M180 104 C49 104 27 181 27 241"/>
+    <path class="wire attention" d="M180 116 C123 116 129 193 129 241"/>
+    <use href="#block" y="187"/>
+    <text x="238" y="206">earlier blocks</text>
+    <use href="#block" y="96"/>
+    <text x="238" y="115">later blocks</text>
+    <path class="wire flow" d="M238 187 V168"/>
+    <path class="wire flow" d="M238 142 V124"/>
+    <path class="wire flow" d="M238 96 V73"/>
+    <g class="decoded-token">
+      <rect class="node prompt" x="216" y="45" width="44" height="28" rx="4"/>
+      <text x="238" y="64">+1</text>
+    </g>
+    <rect class="node activation" x="191" y="142" width="94" height="26" rx="4"/>
+    <text x="238" y="160"><tspan class="math">h</tspan><tspan dy="3" font-size="11">&#8467;</tspan><tspan dy="-3"> (target)</tspan></text>
+  </g>
+
+  <g>
+    <path class="wire attention" d="M494 194 C430 194 340 206 340 241"/>
+    <path class="wire attention" d="M494 207 C465 207 442 220 442 241"/>
+    <path class="wire flow" d="M544 241 V215"/>
+    <path class="wire flow" d="M544 187 V168"/>
+    <rect class="node" x="494" y="187" width="100" height="28" rx="4"/>
+    <text x="544" y="206">reconstructor</text>
+    <rect class="node activation" x="515" y="142" width="58" height="26" rx="4"/>
+    <text x="544" y="160"><tspan class="math">r</tspan><tspan dy="3" font-size="11">&#8467;</tspan></text>
+  </g>
+
+  <g>
+    <rect class="node" x="12" y="241" width="44" height="28" rx="4"/>
+    <text x="34" y="260">.</text>
+    <rect class="node" x="114" y="241" width="44" height="28" rx="4"/>
+    <text x="136" y="260">.</text>
+    <rect class="node activation" x="216" y="241" width="44" height="28" rx="4"/>
+    <text x="238" y="260">t</text>
+    <rect class="node prompt" x="318" y="241" width="44" height="28" rx="4"/>
+    <text x="340" y="260">+1</text>
+    <rect class="node prompt" x="420" y="241" width="44" height="28" rx="4"/>
+    <text x="442" y="260">.</text>
+    <rect class="node prompt" x="522" y="241" width="44" height="28" rx="4"/>
+    <text x="544" y="260">+N</text>
+    <path class="wire phrase" d="M318 276 V283 H566 V276"/>
+    <text class="note" x="442" y="302">phrase</text>
+  </g>
+
+  <path class="wire flow" d="M285 155 H312"/>
+  <path class="wire flow" d="M515 155 H478"/>
+  <rect class="node loss" x="312" y="130" width="166" height="50" rx="4"/>
+  <text x="395" y="150">MSE(<tspan class="math">r&#771;</tspan><tspan dy="3" font-size="11">&#8467;</tspan><tspan dy="-3">, </tspan><tspan class="math">h&#771;</tspan><tspan dy="3" font-size="11">&#8467;</tspan><tspan dy="-3">)</tspan></text>
+  <text class="note" x="395" y="168">whitened, unit-normalized</text>
+  <path class="wire update" d="M461 130 V113 Q461 105 469 105 H606 Q614 105 614 113 V196 Q614 201 609 201 H594"/>
+  <text class="note update-note" transform="translate(604 150) rotate(-90)">update &#952;</text>
+</svg>

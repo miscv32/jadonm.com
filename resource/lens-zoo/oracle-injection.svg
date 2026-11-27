@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 628 400"
+     role="img" aria-labelledby="oracle-title" aria-describedby="oracle-description">
+  <title id="oracle-title">Oracle self-supervised training</title>
+  <desc id="oracle-description">Read from bottom to top. The same held-out assistant activation goes to the decomposition algorithm on the left and is patched into the oracle on the right. The decomposition uses the phrase-vector dictionary at length N. Its first K phrases and their fitted weights provide the training target. The oracle prompt requests N tokens per phrase and K phrases. Fine-tuning trains the oracle to reproduce the target phrase list.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    text { fill: #e0e0e0; font: 16px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .note { fill: #b8c7d6; font-size: 14px; }
+    .math { font-style: italic; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .activation { fill: #203548; stroke: #4dabf7; }
+    .prompt, .loss { fill: #30243d; stroke: #ba9cdd; }
+    .grid { fill: none; stroke: #485664; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .flow { marker-end: url(#arrow); }
+    .attention { stroke-dasharray: 4 4; marker-end: url(#attention-head); }
+    .transfer { stroke: #4dabf7; marker-end: url(#transfer-head); }
+    .update { stroke: #ba9cdd; }
+    .update-head { marker-end: url(#update-head); }
+    .update-note { fill: #d2bce9; }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="attention-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="7" markerHeight="7"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="transfer-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#4dabf7"/>
+    </marker>
+    <marker id="update-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#ba9cdd"/>
+    </marker>
+    <rect id="block" class="node" x="450" width="116" height="28" rx="4"/>
+    <g id="table">
+      <rect class="node" width="200" height="106" rx="4"/>
+      <path class="grid" d="M0 24 H200 M0 46 H200 M0 66 H200 M0 86 H200 M54 24 V106"/>
+      <text class="note" x="127" y="40">phrase</text>
+    </g>
+  </defs>
+
+  <path class="wire flow" d="M80 252 V229"/>
+  <path class="wire flow" d="M180 252 V229"/>
+  <path class="wire flow" d="M118 198 V181"/>
+  <path class="wire flow" d="M118 75 V54 Q118 46 126 46 H230"/>
+  <rect class="node" x="18" y="252" width="124" height="28" rx="4"/>
+  <text x="80" y="271">phrase dictionary</text>
+  <rect class="node activation" x="150" y="252" width="60" height="28" rx="4"/>
+  <text x="180" y="271"><tspan class="math">h</tspan><tspan dy="3" font-size="11">ℓ</tspan></text>
+  <rect class="node" x="18" y="198" width="200" height="31" rx="4"/>
+  <text x="118" y="218">decompose at length <tspan class="math">N</tspan></text>
+
+  <g transform="translate(18 75)">
+    <use href="#table"/>
+    <text x="100" y="17">teacher’s first <tspan class="math">K</tspan> phrases</text>
+    <text class="note" x="27" y="40">weight</text>
+    <text x="27" y="61"><tspan class="math">w</tspan><tspan dy="3" font-size="11">1</tspan></text>
+    <text x="127" y="61"><tspan class="math">p</tspan><tspan dy="3" font-size="11">1</tspan></text>
+    <text x="27" y="81">⋮</text>
+    <text x="127" y="81">⋮</text>
+    <text x="27" y="101"><tspan class="math">w</tspan><tspan class="math" dy="3" font-size="11">K</tspan></text>
+    <text x="127" y="101"><tspan class="math">p</tspan><tspan class="math" dy="3" font-size="11">K</tspan></text>
+  </g>
+
+  <path class="wire attention" d="M450 206 C345 206 274 263 274 340"/>
+  <path class="wire attention" d="M450 218 C374 218 365 297 365 340"/>
+  <path class="wire attention" d="M450 303 C419 303 391 321 391 340"/>
+  <path class="wire flow" d="M508 340 V319"/>
+  <path class="wire" d="M508 291 V285 M503 285 H513"/>
+  <path class="wire transfer" d="M508 252 V226"/>
+  <path class="wire flow" d="M508 198 V181"/>
+  <path class="wire flow" d="M508 75 V54 Q508 46 500 46 H398"/>
+
+  <use href="#block" y="198"/>
+  <text x="508" y="217">later blocks</text>
+  <use href="#block" y="291"/>
+  <text x="508" y="310">earlier blocks</text>
+  <rect class="node activation" x="478" y="252" width="60" height="28" rx="4"/>
+  <text x="508" y="271"><tspan class="math">h</tspan><tspan dy="3" font-size="11">ℓ</tspan></text>
+
+  <g transform="translate(408 75)">
+    <use href="#table"/>
+    <text x="100" y="17">oracle phrase list</text>
+    <text class="note" x="27" y="40">rank</text>
+    <text x="27" y="61">1</text>
+    <text x="127" y="61"><tspan class="math">p̂</tspan><tspan dy="3" font-size="11">1</tspan></text>
+    <text x="27" y="81">⋮</text>
+    <text x="127" y="81">⋮</text>
+    <text x="27" y="101"><tspan class="math">K</tspan></text>
+    <text x="127" y="101"><tspan class="math">p̂</tspan><tspan class="math" dy="3" font-size="11">K</tspan></text>
+  </g>
+
+  <rect class="node prompt" x="240" y="340" width="80" height="28" rx="4"/>
+  <text x="280" y="359">length <tspan class="math">N</tspan></text>
+  <rect class="node prompt" x="331" y="340" width="82" height="28" rx="4"/>
+  <text x="372" y="359">count <tspan class="math">K</tspan></text>
+  <g fill="#b8c7d6" aria-hidden="true">
+    <circle cx="434" cy="354" r="2.3"/>
+    <circle cx="445" cy="354" r="2.3"/>
+    <circle cx="456" cy="354" r="2.3"/>
+  </g>
+  <rect class="node prompt" x="478" y="340" width="60" height="28" rx="4"/>
+
+  <rect class="node loss" x="230" y="29" width="168" height="34" rx="4"/>
+  <text x="314" y="51">fine-tuning loss</text>
+  <path class="wire update update-head" d="M382 29 V19 Q382 11 390 11 H612 Q620 11 620 19 V297 Q620 305 612 305 H566"/>
+  <path class="wire update update-head" d="M620 204 Q620 212 612 212 H566"/>
+  <text class="note update-note" transform="translate(609 259) rotate(-90)">update θ</text>
+</svg>
