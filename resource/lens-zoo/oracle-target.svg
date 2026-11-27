@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 356 244" role="img"
+     aria-labelledby="oracle-title" aria-describedby="oracle-description">
+  <title id="oracle-title">Oracle reconstructor training target</title>
+  <desc id="oracle-description">Read from bottom to top. The transformer reads through token t and yields the target layer activation at t. The phrase consists of the next N tokens.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-bold.otf") format("opentype");
+      font-weight: 700;
+    }
+    text { fill: #e0e0e0; font: 16px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .note { fill: #b8c7d6; font-size: 14px; }
+    .math { font-style: italic; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .activation { fill: #203548; stroke: #4dabf7; }
+    .prompt, .loss { fill: #30243d; stroke: #ba9cdd; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .flow { marker-end: url(#arrow); }
+    .attention { stroke-dasharray: 4 4; marker-end: url(#attention-head); }
+    .transfer { stroke: #4dabf7; marker-end: url(#transfer-head); }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="attention-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="7" markerHeight="7"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="transfer-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#4dabf7"/>
+    </marker>
+    <rect id="block" x="116" width="116" height="28" rx="4"/>
+    <g id="transformer">
+      <path class="wire flow" d="M174 275 V249"/>
+      <path class="wire flow" d="M174 130 V107"/>
+      <use class="node" href="#block" y="221"/>
+      <text x="174" y="240">earlier blocks</text>
+      <use class="node" href="#block" y="130"/>
+      <text x="174" y="149">later blocks</text>
+    </g>
+    <g id="earlier-attention">
+      <path class="wire attention" d="M116 228 C81 228 44 244 44 275"/>
+      <path class="wire attention" d="M116 241 C101 241 91 253 91 275"/>
+    </g>
+    <g id="later-attention">
+      <path class="wire attention" d="M116 138 C29 138 30 221 30 275"/>
+      <path class="wire attention" d="M116 150 C64 150 77 227 77 275"/>
+    </g>
+
+  </defs>
+
+  <g transform="translate(0 -102)">
+    <use href="#earlier-attention"/>
+    <use href="#later-attention"/>
+    <use href="#transformer"/>
+    <path class="wire flow" d="M174 221 V202 M174 176 V158"/>
+    <rect class="node activation" x="127" y="176" width="94" height="26" rx="4"/>
+    <text x="174" y="194"><tspan class="math">h</tspan><tspan dy="3" font-size="11">ℓ</tspan><tspan dy="-3"> (target)</tspan></text>
+  </g>
+  <path class="wire" d="M210 208 V215 H337 V208"/>
+  <text class="note" x="273.5" y="233">phrase</text>
+  <rect class="node" x="15" y="173" width="31" height="28" rx="4"/>
+  <text x="30.5" y="192">…</text>
+  <rect class="node" x="67" y="173" width="34" height="28" rx="4"/>
+  <text x="84" y="192">…</text>
+  <rect class="node activation" x="151" y="173" width="46" height="28" rx="4"/>
+  <text x="174" y="192">t</text>
+  <rect class="node prompt" x="210" y="173" width="39" height="28" rx="4"/>
+  <text x="229.5" y="192">+1</text>
+  <rect class="node prompt" x="254" y="173" width="39" height="28" rx="4"/>
+  <text x="273.5" y="192">…</text>
+  <rect class="node prompt" x="298" y="173" width="39" height="28" rx="4"/>
+  <text x="317.5" y="192">+N</text>
+
+</svg>

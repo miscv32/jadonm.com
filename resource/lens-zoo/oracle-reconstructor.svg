@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 264" role="img"
+     aria-labelledby="oracle-title" aria-describedby="oracle-description">
+  <title id="oracle-title">Oracle reconstructor</title>
+  <desc id="oracle-description">The reconstructor reads the phrase and produces the reconstructed layer vector from its last token.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-bold.otf") format("opentype");
+      font-weight: 700;
+    }
+    text { fill: #e0e0e0; font: 16px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .note { fill: #b8c7d6; font-size: 14px; }
+    .math { font-style: italic; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .activation { fill: #203548; stroke: #4dabf7; }
+    .prompt, .loss { fill: #30243d; stroke: #ba9cdd; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .flow { marker-end: url(#arrow); }
+    .attention { stroke-dasharray: 4 4; marker-end: url(#attention-head); }
+    .transfer { stroke: #4dabf7; marker-end: url(#transfer-head); }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="attention-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="7" markerHeight="7"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="transfer-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#4dabf7"/>
+    </marker>
+    <rect id="block" x="116" width="116" height="28" rx="4"/>
+    <g id="transformer">
+      <path class="wire flow" d="M174 275 V249"/>
+      <path class="wire flow" d="M174 130 V107"/>
+      <use class="node" href="#block" y="221"/>
+      <text x="174" y="240">earlier blocks</text>
+      <use class="node" href="#block" y="130"/>
+      <text x="174" y="149">later blocks</text>
+    </g>
+    <g id="earlier-attention">
+      <path class="wire attention" d="M116 228 C81 228 44 244 44 275"/>
+      <path class="wire attention" d="M116 241 C101 241 91 253 91 275"/>
+    </g>
+    <g id="later-attention">
+      <path class="wire attention" d="M116 138 C29 138 30 221 30 275"/>
+      <path class="wire attention" d="M116 150 C64 150 77 227 77 275"/>
+    </g>
+
+  </defs>
+
+  <g transform="translate(0 -81)">
+    <use href="#earlier-attention"/>
+    <use href="#later-attention"/>
+    <use href="#transformer"/>
+    <path class="wire flow" d="M174 221 V158"/>
+  </g>
+  <rect class="node activation" x="145" y="2" width="58" height="24" rx="4"/>
+  <text x="174" y="19"><tspan class="math">r</tspan><tspan dy="3" font-size="11">ℓ</tspan><tspan dy="-3"></tspan></text>
+  <text class="note" x="246" y="104">reconstructor</text>
+  <path class="wire" d="M16 229 V236 H195 V229"/>
+  <text class="note" x="105.5" y="254">phrase</text>
+  <rect class="node prompt" x="16" y="194" width="37" height="28" rx="4"/>
+  <text x="34.5" y="213">+1</text>
+  <rect class="node prompt" x="64" y="194" width="37" height="28" rx="4"/>
+  <text x="82.5" y="213">…</text>
+  <rect class="node prompt" x="153" y="194" width="42" height="28" rx="4"/>
+  <text x="174" y="213">+N</text>
+
+</svg>

@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 544 558"
+     role="img" aria-labelledby="oracle-title" aria-describedby="oracle-description">
+  <title id="oracle-title">Oracle lens inference</title>
+  <desc id="oracle-description">Read from bottom to top. Take the hidden state at layer ell of the base model and inject it into the oracle. Prompt the oracle for K phrases of length N. Pass each generated phrase through the reconstructor to obtain a direction. Fit non-negative weights so the weighted sum of these directions approximates the original hidden state. The result pairs each phrase with its fitted weight.</desc>
+  <style>
+    @font-face {
+      font-family: "Latin Modern Sans";
+      src: url("../../fonts/lmsans10-regular.otf") format("opentype");
+    }
+    text { fill: #e0e0e0; font: 16px "Latin Modern Sans", sans-serif; text-anchor: middle; }
+    .note { fill: #b8c7d6; font-size: 14px; }
+    .math { font-style: italic; }
+    .node { fill: #20252c; stroke: #8090a3; stroke-width: 1.8; }
+    .activation { fill: #203548; stroke: #4dabf7; }
+    .prompt, .fit { fill: #30243d; stroke: #ba9cdd; }
+    .grid { fill: none; stroke: #485664; }
+    .wire {
+      fill: none;
+      stroke: #b8c7d6;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .flow { marker-end: url(#arrow); }
+    .attention { stroke-dasharray: 4 4; marker-end: url(#attention-head); }
+    .attention-segment { marker-end: none; }
+    .transfer { stroke: #4dabf7; marker-end: url(#transfer-head); }
+    .transfer-note { fill: #91ccff; }
+    .bridge { stroke: #121212; stroke-width: 8; }
+  </style>
+  <defs>
+    <path id="arrowhead" d="M0 0 L9 4 L0 8 Z"/>
+    <marker id="arrow" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="attention-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="7" markerHeight="7"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#b8c7d6"/>
+    </marker>
+    <marker id="transfer-head" viewBox="0 0 9 8" refX="9" refY="4" markerWidth="9" markerHeight="8"
+            markerUnits="userSpaceOnUse" orient="auto">
+      <use href="#arrowhead" fill="#4dabf7"/>
+    </marker>
+    <rect id="block" class="node" x="-58" width="116" height="28" rx="4"/>
+    <g id="hidden-state">
+      <rect class="node activation" x="-30" width="60" height="28" rx="4"/>
+      <text y="19"><tspan class="math">h</tspan><tspan dy="3" font-size="11">&#8467;</tspan></text>
+    </g>
+    <path id="patch-transfer" d="M130 418 H387"/>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#121212"/>
+  <g aria-label="Base model">
+    <path class="wire attention" d="M42 463 C28 463 25 481 25 496"/>
+    <path class="wire attention" d="M76 478 C65 481 61 486 61 496"/>
+    <path class="wire flow" d="M100 496 V478 M100 450 V432"/>
+    <use href="#block" x="100" y="450"/>
+    <text x="100" y="469">earlier blocks</text>
+    <rect class="node" x="12" y="496" width="26" height="28" rx="4"/>
+    <text class="note" x="25" y="515">&#8230;</text>
+    <rect class="node" x="48" y="496" width="26" height="28" rx="4"/>
+    <text class="note" x="61" y="515">&#8230;</text>
+    <rect class="node activation" x="82" y="496" width="36" height="28" rx="4"/>
+    <text class="math" x="100" y="515">t</text>
+    <text class="note" x="100" y="545">base model</text>
+  </g>
+
+  <path class="wire flow" d="M100 404 V105 Q100 95 110 95 H175"/>
+  <use href="#hidden-state" x="100" y="404"/>
+
+  <g aria-label="Oracle">
+    <path class="wire attention" d="M359 367 C258 367 183 419 183 496"/>
+    <path class="wire attention" d="M359 380 C292 380 271 440 271 496"/>
+    <path class="wire attention attention-segment" d="M359 462 C331.4 462 303.1 463.5 278.3 466.4"/>
+    <path class="wire attention" d="M265.6 468.1 C228.6 473.6 202 482.8 202 496"/>
+    <path class="wire attention" d="M359 472 C333 472 290 480 290 496"/>
+    <path class="wire flow" d="M417 496 V478"/>
+    <path class="wire" d="M417 450 V441 M412 441 H422"/>
+    <path class="wire transfer" d="M417 404 V387"/>
+    <path class="wire flow" d="M417 359 V338"/>
+    <use href="#block" x="417" y="359"/>
+    <text x="417" y="378">later blocks</text>
+    <use href="#hidden-state" x="417" y="404"/>
+    <use href="#block" x="417" y="450"/>
+    <text x="417" y="469">earlier blocks</text>
+    <rect class="node prompt" x="162" y="496" width="80" height="28" rx="4"/>
+    <text x="202" y="515">length <tspan class="math">N</tspan></text>
+    <rect class="node prompt" x="249" y="496" width="82" height="28" rx="4"/>
+    <text x="290" y="515">count <tspan class="math">K</tspan></text>
+    <g fill="#b8c7d6" aria-hidden="true">
+      <circle cx="348" cy="510" r="2.3"/>
+      <circle cx="359" cy="510" r="2.3"/>
+      <circle cx="370" cy="510" r="2.3"/>
+    </g>
+    <rect class="node prompt" x="387" y="496" width="60" height="28" rx="4"/>
+    <text class="note" x="417" y="545">oracle / reconstructor</text>
+  </g>
+
+  <use class="wire bridge" href="#patch-transfer"/>
+  <use class="wire transfer" href="#patch-transfer"/>
+  <text class="note transfer-note" x="184" y="409">patch</text>
+
+  <g transform="translate(317 248)">
+    <rect class="node" width="200" height="90" rx="4"/>
+    <path class="grid" d="M0 24 H200 M0 46 H200 M0 68 H200 M54 24 V90"/>
+    <text x="100" y="17">oracle phrase list</text>
+    <text class="note" x="27" y="40">1</text>
+    <text class="math" x="127" y="40">p<tspan dy="3" font-size="11">1</tspan></text>
+    <text x="27" y="62">&#8942;</text>
+    <text x="127" y="62">&#8942;</text>
+    <text class="note math" x="27" y="84">K</text>
+    <text class="math" x="127" y="84">p<tspan dy="3" font-size="11">K</tspan></text>
+  </g>
+
+  <path class="wire flow" d="M417 248 V227"/>
+  <text class="note" x="475" y="242">each phrase</text>
+  <use href="#block" x="417" y="199"/>
+  <text x="417" y="218">reconstructor</text>
+  <path class="wire flow" d="M417 199 V178"/>
+  <rect class="node activation" x="349" y="148" width="136" height="30" rx="4"/>
+  <text x="417" y="168">directions <tspan class="math">r</tspan><tspan dy="3" font-size="11">1</tspan><tspan dy="-3">, &#8230;, </tspan><tspan class="math">r</tspan><tspan class="math" dy="3" font-size="11">K</tspan></text>
+  <path class="wire flow" d="M417 148 V105 Q417 95 407 95 H359"/>
+
+  <rect class="node fit" x="175" y="70" width="184" height="49" rx="4"/>
+  <text x="267" y="90">fit weights <tspan class="math">w</tspan><tspan dy="3" font-size="11">i</tspan><tspan dy="-3"> &#8805; 0</tspan></text>
+  <text class="note" x="267" y="109">minimize &#8214;<tspan class="math">h</tspan><tspan dy="3" font-size="10">&#8467;</tspan><tspan dy="-3"> &#8722; &#8721;</tspan><tspan class="math" dy="3" font-size="10">i</tspan><tspan class="math" dy="-3"> w</tspan><tspan dy="3" font-size="10">i</tspan><tspan class="math" dy="-3">r</tspan><tspan dy="3" font-size="10">i</tspan><tspan dy="-3">&#8214;&#178;</tspan></text>
+
+  <path class="wire flow" d="M267 70 V52"/>
+  <rect class="node" x="175" y="8" width="184" height="44" rx="4"/>
+  <text x="267" y="26">weighted phrases</text>
+  <text class="note" x="267" y="43">(<tspan class="math">p</tspan><tspan dy="3" font-size="10">1</tspan><tspan dy="-3">, </tspan><tspan class="math">w</tspan><tspan dy="3" font-size="10">1</tspan><tspan dy="-3">), &#8230;, (</tspan><tspan class="math">p</tspan><tspan class="math" dy="3" font-size="10">K</tspan><tspan dy="-3">, </tspan><tspan class="math">w</tspan><tspan class="math" dy="3" font-size="10">K</tspan><tspan dy="-3">)</tspan></text>
+</svg>
