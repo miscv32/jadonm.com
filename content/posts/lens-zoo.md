@@ -1,6 +1,6 @@
 ---
 title: the logit lens zoo
-date: 2026-11-21
+date: 2026-11-27
 ---
 
 In this post I try to explain a whole host of logit lens variants. If you have a specific lens you'd like to understand, this post's best read in order according to the (interactive) graph of contents. Otherwise, you can read this top-to-bottom; I've arranged the sections such that a lens' prerequisites precede it. You may or may not find the prerequisites helpful, but I'd recommend reading the transformer architecture recap at a minimum before you continue if you're not already familiar with transformers. 
@@ -429,6 +429,8 @@ At inference-time we:
 prerequisites:
 :   [tuned lens](#tuned-lens).
 
+TODO determine if this is worth including, if yes write section
+
 further reading:
 :   [Interpreting Language Model Hidden States at Scale](https://arxiv.org/abs/2608.10260), Pettyjohn *et al.* (2026)
 
@@ -512,6 +514,8 @@ S-lens is to [R-lens](#r-lens) as [K-lens](#k-lens) is to [J-lens](#j-lens) :3
 
 prerequisites:
 :   [j-lens](#j-lens).
+
+TODO determine if this is worth including, if yes write section
 
 further reading:
 :   [A Mathematical Theory of the Jacobian Lens](https://arxiv.org/html/2610.31955v1#S1.SS2), Ostrow *et al.* (2026)
