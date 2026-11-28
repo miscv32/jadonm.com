@@ -1,6 +1,11 @@
 {
   "log": [
     {
+      "id": "lenszoo",
+      "date": "2026-11-28",
+      "text": "blog post: [the logit lens zoo](./posts/lens-zoo.html)"
+    },
+    {
       "id": "understanding-lrh",
       "date": "2026-11-14",
       "text": "blog post: [Understanding the Linear Representation Hypothesis](posts/understanding-lrh.html)."
