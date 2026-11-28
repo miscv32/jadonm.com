@@ -9,7 +9,7 @@ If you just want to know which lens to choose for your interpretability project,
 
 [WorkspaceBench](https://www.lesswrong.com/posts/Zeg2JztbdhguL48uH/workspacebench-evaluating-interpretability-methods-for-the) is a benchmark for global workspace lenses. It's worth reading the LW post (especially the section *Desiderata of a workspace reader*) to understand the kind of tasks that we'd like our lenses to do well on.
 
-<object data="../resource/lens-zoo/lens-family.svg" type="image/svg+xml" aria-label="Logit Lens family tree" style="display: block; width: 100%; aspect-ratio: 1004 / 617;">
+<object data="../resource/lens-zoo/lens-family.svg" type="image/svg+xml" aria-label="Logit Lens family tree" style="display: block; width: 100%; aspect-ratio: 808 / 545;">
   <a href="../resource/lens-zoo/lens-family.svg">open the Logit Lens family tree</a>
 </object>
 
@@ -34,10 +34,9 @@ further reading:
 
 - Finally, the residual-stream vector is "up-projected" from $d_{model} \times 1$ to $|V| \times 1$ by the unembedding matrix.
 
-- For simplicity, we'll ignore normalisation and softmax-ing.
+- For simplicity, we'll mostly ignore normalisation and softmax-ing.
 
 ### notation
-TODO make notation consistent throughout text and in diagrams
 
 - $|V|$ -- "vocabulary size" of model, number of tokens it can represent.
 
@@ -88,7 +87,7 @@ The logit lens is simple to implement; we apply the unembedding matrix at an int
 
 Why does this work at all?
 
-If a layer "wants" to push the next-token prediction towards a specific token $\mathbf{e}_i$, the best way for it to transmit this information is by writing the vector $\mathbf{v}$ to the residual stream, where $\mathbf{e}_i = \mathbf{W}_U\mathbf{v}$.
+If a layer "wants" to push the next-token prediction towards a specific token $\mathbf{e}_i$, the best way for it to transmit this information is by writing the vector $\mathbf{v}$ to the residual stream, where $\mathbf{e}_i \approx \mathbf{W}_U\mathbf{v}$.
 
 On the other hand, if a layer has information that it intends for a later layer to read as part of a circuit, there's no reason that the way it writes this information to the residual stream should have any relation to the unembedding matrix, since the later layer(s) can easily transform these directions arbitrarily.
 
@@ -141,7 +140,7 @@ The aim of a tuned lens is to [Elicit Latent Predictions](https://arxiv.org/html
 However, we might expect the workspace token distributions to occasionally diverge from the final next-token prediction when the model does multi-step reasoning. This suggests that the tuned lens, too, doesn't reliably target the model's workspace.
 
 next:
-:   [future lens](#future-lens) or [omnilens](#omnilens).
+:   [future lens](#future-lens).
 
 ## j-lens {#j-lens}
 prerequisites:
@@ -192,18 +191,18 @@ as the "average linearised effect of an activation on the model's likelihood of 
 </figure>
 ~~~
 
-We'll call the space with "basis" given by the rows of $\mathbf{W_U} \mathbf{J}$ the J-space. Actually, the rows of $\mathbf{W_U} \mathbf{J}$ form an overcomplete set, but if we say that the J-space is the set of sparse, non negative combinations of those rows, then we get something that looks like a high-dimensional space.
+We'll call the space with "basis" given by the rows of $\mathbf{W}_U \mathbf{J}$ the J-space. Actually, the rows of $\mathbf{W}_U \mathbf{J}$ form an overcomplete set, but if we say that the J-space is the set of sparse, non negative combinations of those rows, then we get something that looks like a high-dimensional space.
 
 Empirically, the J-space acts like a workspace. Intervening on $\mathbf{h}_{\ell}$ by adding/subtracting J-lens vectors to it affects the model's output the way we'd expect it to if the J-space were a global workspace, and the model can "introspect" on the concepts in its J-space, and manipulate them on command. 
 
 Why would we expect the J-lens to access the model's *global workspace*?
 
-- J-space vectors can represent intermediate steps without steering $h_\ell$ towards the intermediate step's token. We already saw this is a desideratum that [logit](#logit-lens) and [tuned](#tuned-lens) lenses lack.
+- J-space vectors can represent intermediate steps without steering $\mathbf{h}_\ell$ towards the intermediate step's token. We already saw this is a desideratum that [logit](#logit-lens) and [tuned](#tuned-lens) lenses lack.
 
 - The J-space vector for a token-concept still ends up steering the final prediction to that token in the average context, so it probably represents a concept related to that token to the model itself.
 
 next:
-:   [template lens](#template-lens), [r-lens](#r-lens), [chain lens](#chain-lens), [j++ lens](#j-plus-plus-lens), [k-lens](#k-lens), or [$\omega$-J lenses](#omega-j-lenses).
+:   [template lens](#template-lens), [r-lens](#r-lens), [chain lens](#chain-lens), [j++ lens](#j-plus-plus-lens), or [k-lens](#k-lens).
 
 ## future lens {#future-lens}
 prerequisites:
@@ -264,7 +263,7 @@ further reading:
 
 The output of the J-lens is restricted to single tokens. This is quite a severe limitation, because many of the concepts we care about can't be represented in a human-interpretable way by a single token. The template lens is a J-lens-esque technique for these multi-token concepts.
 
-We start with a list of D multi-token words/phrases $w_1, ..., w_D$. For each $w_i$, we prompt our model to write a large number of diverse passages where $w_i$ is the natural completion, but $w_i$ doesn't appear anywhere in the passage. We run the model over our passages for $w_i$ and collect $\mathbf{h}_\ell$ at the last token of the passage, taking the mean as $\mathbf{\mu}_i(\ell)$. We'll call the mean $\mathbf{h}_\ell$ over all passages and words $\mathbf{\mu}$. 
+We start with a list of D multi-token words/phrases $w_1, ..., w_D$. For each $w_i$, we prompt our model to write a large number of diverse passages where $w_i$ is the natural completion, but $w_i$ doesn't appear anywhere in the passage. We run the model over our passages for $w_i$ and collect $\mathbf{h}_\ell$ at the last token of the passage, taking the mean as $\boldsymbol{\mu}_i(\ell)$. We'll call the mean $\mathbf{h}_\ell$ over all passages and words $\boldsymbol{\mu}(\ell)$. 
 
 The template lens is then defined as follows:
 
@@ -273,9 +272,9 @@ The template lens is then defined as follows:
 
   $$\mathbf{T}_\ell = \left[\mathbf{t}_1(\ell)\ \cdots\ \mathbf{t}_D(\ell)\right]$$
 
-  $$\mathbf{t}_i(\ell) = (\mathbf{\Sigma}_\ell + \lambda I)^{-1}(\mathbf{\mu}_i(\ell) - \mathbf{\mu}(\ell))$$
+  $$\mathbf{t}_i(\ell) = (\boldsymbol{\Sigma}_\ell + \lambda \mathbf{I})^{-1}(\boldsymbol{\mu}_i(\ell) - \boldsymbol{\mu}(\ell))$$
 
-Essentially, we compare how similar $\mathbf{x}$ is to the difference-in-mean-activations for a given concept $\Delta\mathbf{\mu} = \mathbf{\mu}_i - \mathbf{\mu}$. We *whiten*[^whiten] $\mathbf{x}$ and $\Delta\mathbf{\mu}$ to account for the fact that some directions have lower variance than others, so in those directions a larger $\mathbf{x}$ or $\Delta \mathbf{\mu}$ is more significant.
+Essentially, we compare how similar $\mathbf{x}$ is to the difference-in-mean-activations for a given concept $\Delta\boldsymbol{\mu}(\ell) = \boldsymbol{\mu}_i(\ell) - \boldsymbol{\mu}(\ell)$. We *whiten*[^whiten] $\mathbf{x}$ and $\Delta\boldsymbol{\mu}(\ell)$ to account for the fact that some directions have lower variance than others, so in those directions a larger $\mathbf{x}$ or $\Delta\boldsymbol{\mu}(\ell)$ is more significant.
 
 next:
 :   [oracle lens](#oracle-lens).
@@ -322,7 +321,7 @@ further reading:
 
 The chain lens is a straightforward improvement on the J-lens which uses multi-token prediction heads[^mtp] with contrastive decoding[^contrastivedecoding] to elicit multi-token predictions from the J-lens.
 
-$$ \operatorname{ChainLens}_\ell(\mathbf{h}_{\ell}) = \operatorname{MultiTokenPrediction}(\mathbf{J}_{\ell+1:L}\mathbf{h}_{\ell})$$
+$$ \operatorname{ChainLens}_\ell(\mathbf{h}_{\ell}) = \operatorname{MultiTokenPrediction}(\mathbf{J}\mathbf{h}_{\ell})$$
 
 
 
@@ -379,10 +378,10 @@ $$
 \begin{aligned}
 &\text{Input: activation } \mathbf{h}_\ell \\
 &\phantom{\text{Input: }}\text{dictionary } D \text{ of phrases with length } N \\
-&\phantom{\text{Input: }}\text{maximum number of phrases } k \\
+&\phantom{\text{Input: }}\text{maximum number of phrases } K \\
 &\text{Sample } S \subseteq D \text{ uniformly subject to } |S|=\tfrac12|D| \\
-&\boldsymbol{\delta} \gets \mathbf{h}_\ell,\qquad w_{1:k} \gets \mathbf{0} \\
-&\textbf{for } i=1,\ldots,k \textbf{ do} \\
+&\boldsymbol{\delta} \gets \mathbf{h}_\ell,\qquad w_{1:K} \gets \mathbf{0} \\
+&\textbf{for } i=1,\ldots,K \textbf{ do} \\
 &\qquad \textbf{if } S=\varnothing \text{ or } \boldsymbol{\delta}=\mathbf{0} \textbf{ then break} \\
 &\qquad \mathbf{v}_i \gets \operatorname*{arg\,max}_{\mathbf{v}\in S}
     \frac{\mathbf{v}^\top\boldsymbol{\delta}}{\lVert \mathbf{v}\rVert_2\lVert\boldsymbol{\delta}\rVert_2} \\
@@ -423,16 +422,6 @@ At inference-time we:
 3. Map each oracle-generated phrase $\mathbf{p}_i$ to an activation direction $\mathbf{r}_i$ using the reconstructor.
 
 4. Choose non-negative coefficients $w_i$ so that $\sum_i w_i\mathbf{r}_i$ is as close as possible to $\mathbf{h}_\ell$.
-
-## omnilens {#omnilens}
-
-prerequisites:
-:   [tuned lens](#tuned-lens).
-
-TODO determine if this is worth including, if yes write section
-
-further reading:
-:   [Interpreting Language Model Hidden States at Scale](https://arxiv.org/abs/2608.10260), Pettyjohn *et al.* (2026)
 
 ## coda lens {#coda-lens}
 
@@ -510,16 +499,6 @@ S-lens is to [R-lens](#r-lens) as [K-lens](#k-lens) is to [J-lens](#j-lens) :3
   <iframe src="../resource/lens-zoo/lens-comparison.svg#full" title="Comparison of the logit, J-, K-, R- and S-lenses"></iframe>
 </figure>
 
-## $\omega$-J lenses {#omega-j-lenses}
-
-prerequisites:
-:   [j-lens](#j-lens).
-
-TODO determine if this is worth including, if yes write section
-
-further reading:
-:   [A Mathematical Theory of the Jacobian Lens](https://arxiv.org/html/2610.31955v1#S1.SS2), Ostrow *et al.* (2026)
-
 [^jpp-filtering-ablation]: [Appendix H: Ablations](https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#Appendix_H__Ablations), Figure 18 and Table 4, “without Jacobian Filtering (Pooled Jacobian)”.
 
 [^jpp-drop-worst]: [Appendix H: Ablations](https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace-lenses#Appendix_H__Ablations), Table 4, “Pooled Jacobian, two worst experts dropped”.
@@ -540,7 +519,7 @@ further reading:
 
 [^contrastivedecoding]: An interesting technique, but slightly out of scope for this post. Introduced by [Li *et al.*](https://arxiv.org/abs/2210.15097) (2022)
 
-[^whiten]: [en.wikipedia.org/wiki/Whitening_transformation](https://en.wikipedia.org/wiki/Whitening_transformation). $\Sigma_\ell$ is the covariance matrix of $h_\ell$s over all words & all passages. We add $\lambda I$ as a [ridge regularisation](https://en.wikipedia.org/wiki/Ridge_regression) term which prevents directions with very small variance from dominating $t_i(\ell)$.
+[^whiten]: [en.wikipedia.org/wiki/Whitening_transformation](https://en.wikipedia.org/wiki/Whitening_transformation). $\boldsymbol{\Sigma}_\ell$ is the covariance matrix of $\mathbf{h}_\ell$s over all words & all passages. We add $\lambda \mathbf{I}$ as a [ridge regularisation](https://en.wikipedia.org/wiki/Ridge_regression) term which prevents directions with very small variance from dominating $\mathbf{t}_i(\ell)$.
 
 [^phraselength]: phrase length $N$ is variable, the Anthropic paper says they sample $N$ uniformly from $[1,32]$.
 
