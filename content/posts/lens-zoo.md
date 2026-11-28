@@ -1,6 +1,6 @@
 ---
 title: the logit lens zoo
-date: 2026-11-27
+date: 2026-11-28
 ---
 
 In this post I try to explain a whole host of logit lens variants. If you have a specific lens you'd like to understand, this post's best read in order according to the (interactive) graph of contents. Otherwise, you can read this top-to-bottom; I've arranged the sections such that a lens' prerequisites precede it. You may or may not find the prerequisites helpful, but I'd recommend reading the transformer architecture recap at a minimum before you continue if you're not already familiar with transformers. 
