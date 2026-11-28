@@ -75,8 +75,6 @@
       <rect class="node attention" x="84" y="-58" width="52" height="26" rx="4"/>
       <rect class="node attention" x="146" y="-58" width="52" height="26" rx="4"/>
       <rect class="node mlp" x="22" y="-133" width="176" height="26" rx="4"/>
-      <text class="label" x="48" y="-45" dy="4.7">h<tspan font-size="12" dy="3">0</tspan></text>
-      <text class="label" x="110" y="-45" dy="4.7">h<tspan font-size="12" dy="3">1</tspan></text>
       <text class="label" x="172" y="-45" dy="0.75">…</text>
       <text class="label strong" x="110" y="-120" dy="6.25">MLP</text>
       <use href="#add" x="230" y="-73"/>

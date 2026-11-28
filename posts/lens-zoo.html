@@ -64,17 +64,12 @@
                     id="toc-j-plus-plus-lens">j++ lens</a></li>
                     <li><a href="#oracle-lens"
                     id="toc-oracle-lens">oracle lens</a></li>
-                    <li><a href="#omnilens"
-                    id="toc-omnilens">omnilens</a></li>
                     <li><a href="#coda-lens" id="toc-coda-lens">coda
                     lens</a></li>
                     <li><a href="#k-lens"
                     id="toc-k-lens">k-lens</a></li>
                     <li><a href="#s-lens"
                     id="toc-s-lens">s-lens</a></li>
-                    <li><a href="#omega-j-lenses"
-                    id="toc-omega-j-lenses"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
-                    lenses</a></li>
                     </ul>
                 </nav>
                                 <p>In this post I try to explain a whole
@@ -106,7 +101,7 @@
                                 of a workspace reader</em>) to
                                 understand the kind of tasks that we’d
                                 like our lenses to do well on.</p>
-                                <object data="../resource/lens-zoo/lens-family.svg" type="image/svg+xml" aria-label="Logit Lens family tree" style="display: block; width: 100%; aspect-ratio: 1004 / 617;">
+                                <object data="../resource/lens-zoo/lens-family.svg" type="image/svg+xml" aria-label="Logit Lens family tree" style="display: block; width: 100%; aspect-ratio: 808 / 545;">
                                 <a href="../resource/lens-zoo/lens-family.svg">open
                                 the Logit Lens family tree</a>
                                 </object>
@@ -184,13 +179,12 @@
                                 to
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>V</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|V| \times 1</annotation></semantics></math>
                                 by the unembedding matrix.</p></li>
-                                <li><p>For simplicity, we’ll ignore
-                                normalisation and softmax-ing.</p></li>
+                                <li><p>For simplicity, we’ll mostly
+                                ignore normalisation and
+                                softmax-ing.</p></li>
                                 </ul>
                                 <section id="notation" class="level3">
                                 <h3>notation</h3>
-                                <p>TODO make notation consistent
-                                throughout text and in diagrams</p>
                                 <ul>
                                 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>V</mi><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|V|</annotation></semantics></math>
                                 – “vocabulary size” of model, number of
@@ -299,7 +293,7 @@
                                 information is by writing the vector
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐯</mi><annotation encoding="application/x-tex">\mathbf{v}</annotation></semantics></math>
                                 to the residual stream, where
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐞</mi><mi>i</mi></msub><mo>=</mo><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{e}_i = \mathbf{W}_U\mathbf{v}</annotation></semantics></math>.</p>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐞</mi><mi>i</mi></msub><mo>≈</mo><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐯</mi></mrow><annotation encoding="application/x-tex">\mathbf{e}_i \approx \mathbf{W}_U\mathbf{v}</annotation></semantics></math>.</p>
                                 <p>On the other hand, if a layer has
                                 information that it intends for a later
                                 layer to read as part of a circuit,
@@ -474,8 +468,7 @@
                                 <dl>
                                 <dt>next:</dt>
                                 <dd>
-                                <a href="#future-lens">future lens</a>
-                                or <a href="#omnilens">omnilens</a>.
+                                <a href="#future-lens">future lens</a>.
                                 </dd>
                                 </dl>
                                 </section>
@@ -577,9 +570,9 @@
                                 </figure>
                                 <p>We’ll call the space with “basis”
                                 given by the rows of
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>𝐔</mi></msub><mi>𝐉</mi></mrow><annotation encoding="application/x-tex">\mathbf{W_U} \mathbf{J}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐉</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U \mathbf{J}</annotation></semantics></math>
                                 the J-space. Actually, the rows of
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>𝐔</mi></msub><mi>𝐉</mi></mrow><annotation encoding="application/x-tex">\mathbf{W_U} \mathbf{J}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐖</mi><mi>U</mi></msub><mi>𝐉</mi></mrow><annotation encoding="application/x-tex">\mathbf{W}_U \mathbf{J}</annotation></semantics></math>
                                 form an overcomplete set, but if we say
                                 that the J-space is the set of sparse,
                                 non negative combinations of those rows,
@@ -601,7 +594,7 @@
                                 <ul>
                                 <li><p>J-space vectors can represent
                                 intermediate steps without steering
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>h</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">h_\ell</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>
                                 towards the intermediate step’s token.
                                 We already saw this is a desideratum
                                 that <a href="#logit-lens">logit</a> and
@@ -621,9 +614,7 @@
                                 lens</a>, <a href="#r-lens">r-lens</a>,
                                 <a href="#chain-lens">chain lens</a>, <a
                                 href="#j-plus-plus-lens">j++ lens</a>,
-                                <a href="#k-lens">k-lens</a>, or <a
-                                href="#omega-j-lenses"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
-                                lenses</a>.
+                                or <a href="#k-lens">k-lens</a>.
                                 </dd>
                                 </dl>
                                 </section>
@@ -806,33 +797,33 @@
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>
                                 at the last token of the passage, taking
                                 the mean as
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝛍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{\mu}_i(\ell)</annotation></semantics></math>.
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝛍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\boldsymbol{\mu}_i(\ell)</annotation></semantics></math>.
                                 We’ll call the mean
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>
                                 over all passages and words
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛍</mi><annotation encoding="application/x-tex">\mathbf{\mu}</annotation></semantics></math>.</p>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\boldsymbol{\mu}(\ell)</annotation></semantics></math>.</p>
                                 <p>The template lens is then defined as
                                 follows:</p>
                                 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">TemplateLens</mtext><mo>ℓ</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mi>𝐓</mi><mo>ℓ</mo><mi>⊤</mi></msubsup><mi>𝐱</mi></mrow><annotation encoding="application/x-tex">\text{TemplateLens}_\ell(\mathbf{x}) = \mathbf{T}_\ell^\top \mathbf{x}</annotation></semantics></math></p>
                                 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐓</mi><mo>ℓ</mo></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>𝐭</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mi>⋯</mi><mspace width="0.222em"></mspace><msub><mi>𝐭</mi><mi>D</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{T}_\ell = \left[\mathbf{t}_1(\ell)\ \cdots\ \mathbf{t}_D(\ell)\right]</annotation></semantics></math></p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐭</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝚺</mi><mo>ℓ</mo></msub><mo>+</mo><mi>λ</mi><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝛍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{t}_i(\ell) = (\mathbf{\Sigma}_\ell + \lambda I)^{-1}(\mathbf{\mu}_i(\ell) - \mathbf{\mu}(\ell))</annotation></semantics></math></p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐭</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝚺</mi><mo>ℓ</mo></msub><mo>+</mo><mi>λ</mi><mi>𝐈</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝛍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{t}_i(\ell) = (\boldsymbol{\Sigma}_\ell + \lambda \mathbf{I})^{-1}(\boldsymbol{\mu}_i(\ell) - \boldsymbol{\mu}(\ell))</annotation></semantics></math></p>
                                 <p>Essentially, we compare how similar
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
                                 is to the difference-in-mean-activations
                                 for a given concept
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi><mo>=</mo><msub><mi>𝛍</mi><mi>i</mi></msub><mo>−</mo><mi>𝛍</mi></mrow><annotation encoding="application/x-tex">\Delta\mathbf{\mu} = \mathbf{\mu}_i - \mathbf{\mu}</annotation></semantics></math>.
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>𝛍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta\boldsymbol{\mu}(\ell) = \boldsymbol{\mu}_i(\ell) - \boldsymbol{\mu}(\ell)</annotation></semantics></math>.
                                 We <em>whiten</em><a href="#fn4"
                                 class="footnote-ref" id="fnref4"
                                 role="doc-noteref"><sup>4</sup></a>
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
                                 and
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi></mrow><annotation encoding="application/x-tex">\Delta\mathbf{\mu}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta\boldsymbol{\mu}(\ell)</annotation></semantics></math>
                                 to account for the fact that some
                                 directions have lower variance than
                                 others, so in those directions a larger
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
                                 or
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi></mrow><annotation encoding="application/x-tex">\Delta \mathbf{\mu}</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>𝛍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta\boldsymbol{\mu}(\ell)</annotation></semantics></math>
                                 is more significant.</p>
                                 <dl>
                                 <dt>next:</dt>
@@ -1003,7 +994,7 @@
                                 role="doc-noteref"><sup>6</sup></a> to
                                 elicit multi-token predictions from the
                                 J-lens.</p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ChainLens</mo><mo>ℓ</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>MultiTokenPrediction</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐉</mi><mrow><mo>ℓ</mo><mo>+</mo><mn>1</mn><mo>:</mo><mi>L</mi></mrow></msub><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \operatorname{ChainLens}_\ell(\mathbf{h}_{\ell}) = \operatorname{MultiTokenPrediction}(\mathbf{J}_{\ell+1:L}\mathbf{h}_{\ell})</annotation></semantics></math></p>
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ChainLens</mo><mo>ℓ</mo></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>MultiTokenPrediction</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐉</mi><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \operatorname{ChainLens}_\ell(\mathbf{h}_{\ell}) = \operatorname{MultiTokenPrediction}(\mathbf{J}\mathbf{h}_{\ell})</annotation></semantics></math></p>
                                 </section>
                                 <section id="j-plus-plus-lens"
                                 class="level2">
@@ -1200,14 +1191,14 @@
                                 <p>The algorithm for decomposing an
                                 activation vector into phrase vectors
                                 looks like this:</p>
-                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">Input: activation </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mphantom><mrow><mtext mathvariant="normal">Input: </mtext><mspace width="0.333em"></mspace></mrow></mphantom><mrow><mtext mathvariant="normal">dictionary </mtext><mspace width="0.333em"></mspace></mrow><mi>D</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> of phrases with length </mtext><mspace width="0.333em"></mspace></mrow><mi>N</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mphantom><mrow><mtext mathvariant="normal">Input: </mtext><mspace width="0.333em"></mspace></mrow></mphantom><mrow><mtext mathvariant="normal">maximum number of phrases </mtext><mspace width="0.333em"></mspace></mrow><mi>k</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">Sample </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>⊆</mo><mi>D</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> uniformly subject to </mtext><mspace width="0.333em"></mspace></mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>S</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">|</mo><mi>D</mi><mo stretchy="true" form="postfix">|</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>𝛅</mi><mo>←</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>w</mi><mrow><mn>1</mn><mo>:</mo><mi>k</mi></mrow></msub><mo>←</mo><mn>𝟎</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="bold">𝐟𝐨𝐫 </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>k</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐝𝐨</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mrow><mtext mathvariant="bold">𝐢𝐟 </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>=</mo><mi>⌀</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> or </mtext><mspace width="0.333em"></mspace></mrow><mi>𝛅</mi><mo>=</mo><mn>𝟎</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐭𝐡𝐞𝐧 𝐛𝐫𝐞𝐚𝐤</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><msub><mi>𝐯</mi><mi>i</mi></msub><mo>←</mo><munder><mo>arg max</mo><mrow><mi>𝐯</mi><mo>∈</mo><mi>S</mi></mrow></munder><mfrac><mrow><msup><mi>𝐯</mi><mi>⊤</mi></msup><mi>𝛅</mi></mrow><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>𝐯</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>2</mn></msub><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>𝛅</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>2</mn></msub></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mrow><mtext mathvariant="bold">𝐢𝐟 </mtext><mspace width="0.333em"></mspace></mrow><msubsup><mi>𝐯</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛅</mi><mo>≤</mo><mn>0</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐭𝐡𝐞𝐧 𝐛𝐫𝐞𝐚𝐤</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mi>S</mi><mo>←</mo><mi>S</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>𝐯</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><msub><mi>w</mi><mrow><mn>1</mn><mo>:</mo><mi>i</mi></mrow></msub><mo>←</mo><munder><mo>arg min</mo><mrow><mi>u</mi><mo>∈</mo><msubsup><mi>ℝ</mi><mrow><mo>≥</mo><mn>0</mn></mrow><mi>i</mi></msubsup></mrow></munder><msubsup><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>−</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><msub><mi>u</mi><mi>j</mi></msub><msub><mi>𝐯</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn><mn>2</mn></msubsup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mi>𝛅</mi><mo>←</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>−</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><msub><mi>w</mi><mi>j</mi></msub><msub><mi>𝐯</mi><mi>j</mi></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="bold">𝐞𝐧𝐝 𝐟𝐨𝐫</mtext></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="bold">𝐫𝐞𝐭𝐮𝐫𝐧 </mtext><mspace width="0.333em"></mspace></mrow><mrow><mtext mathvariant="normal">the pairs </mtext><mspace width="0.333em"></mspace></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>w</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐯</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> in increasing order of </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+                                <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">Input: activation </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>𝐡</mi><mo>ℓ</mo></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mphantom><mrow><mtext mathvariant="normal">Input: </mtext><mspace width="0.333em"></mspace></mrow></mphantom><mrow><mtext mathvariant="normal">dictionary </mtext><mspace width="0.333em"></mspace></mrow><mi>D</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> of phrases with length </mtext><mspace width="0.333em"></mspace></mrow><mi>N</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mphantom><mrow><mtext mathvariant="normal">Input: </mtext><mspace width="0.333em"></mspace></mrow></mphantom><mrow><mtext mathvariant="normal">maximum number of phrases </mtext><mspace width="0.333em"></mspace></mrow><mi>K</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">Sample </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>⊆</mo><mi>D</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> uniformly subject to </mtext><mspace width="0.333em"></mspace></mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>S</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">|</mo><mi>D</mi><mo stretchy="true" form="postfix">|</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>𝛅</mi><mo>←</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>w</mi><mrow><mn>1</mn><mo>:</mo><mi>K</mi></mrow></msub><mo>←</mo><mn>𝟎</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="bold">𝐟𝐨𝐫 </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐝𝐨</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mrow><mtext mathvariant="bold">𝐢𝐟 </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>=</mo><mi>⌀</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> or </mtext><mspace width="0.333em"></mspace></mrow><mi>𝛅</mi><mo>=</mo><mn>𝟎</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐭𝐡𝐞𝐧 𝐛𝐫𝐞𝐚𝐤</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><msub><mi>𝐯</mi><mi>i</mi></msub><mo>←</mo><munder><mo>arg max</mo><mrow><mi>𝐯</mi><mo>∈</mo><mi>S</mi></mrow></munder><mfrac><mrow><msup><mi>𝐯</mi><mi>⊤</mi></msup><mi>𝛅</mi></mrow><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>𝐯</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>2</mn></msub><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>𝛅</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>2</mn></msub></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mrow><mtext mathvariant="bold">𝐢𝐟 </mtext><mspace width="0.333em"></mspace></mrow><msubsup><mi>𝐯</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛅</mi><mo>≤</mo><mn>0</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="bold"> 𝐭𝐡𝐞𝐧 𝐛𝐫𝐞𝐚𝐤</mtext></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mi>S</mi><mo>←</mo><mi>S</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>𝐯</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><msub><mi>w</mi><mrow><mn>1</mn><mo>:</mo><mi>i</mi></mrow></msub><mo>←</mo><munder><mo>arg min</mo><mrow><mi>u</mi><mo>∈</mo><msubsup><mi>ℝ</mi><mrow><mo>≥</mo><mn>0</mn></mrow><mi>i</mi></msubsup></mrow></munder><msubsup><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>−</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><msub><mi>u</mi><mi>j</mi></msub><msub><mi>𝐯</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn><mn>2</mn></msubsup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mspace width="2.0em"></mspace><mi>𝛅</mi><mo>←</mo><msub><mi>𝐡</mi><mo>ℓ</mo></msub><mo>−</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><msub><mi>w</mi><mi>j</mi></msub><msub><mi>𝐯</mi><mi>j</mi></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="bold">𝐞𝐧𝐝 𝐟𝐨𝐫</mtext></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="bold">𝐫𝐞𝐭𝐮𝐫𝐧 </mtext><mspace width="0.333em"></mspace></mrow><mrow><mtext mathvariant="normal">the pairs </mtext><mspace width="0.333em"></mspace></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>w</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐯</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> in increasing order of </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
                                 \begin{aligned}
                                 &amp;\text{Input: activation } \mathbf{h}_\ell \\
                                 &amp;\phantom{\text{Input: }}\text{dictionary } D \text{ of phrases with length } N \\
-                                &amp;\phantom{\text{Input: }}\text{maximum number of phrases } k \\
+                                &amp;\phantom{\text{Input: }}\text{maximum number of phrases } K \\
                                 &amp;\text{Sample } S \subseteq D \text{ uniformly subject to } |S|=\tfrac12|D| \\
-                                &amp;\boldsymbol{\delta} \gets \mathbf{h}_\ell,\qquad w_{1:k} \gets \mathbf{0} \\
-                                &amp;\textbf{for } i=1,\ldots,k \textbf{ do} \\
+                                &amp;\boldsymbol{\delta} \gets \mathbf{h}_\ell,\qquad w_{1:K} \gets \mathbf{0} \\
+                                &amp;\textbf{for } i=1,\ldots,K \textbf{ do} \\
                                 &amp;\qquad \textbf{if } S=\varnothing \text{ or } \boldsymbol{\delta}=\mathbf{0} \textbf{ then break} \\
                                 &amp;\qquad \mathbf{v}_i \gets \operatorname*{arg\,max}_{\mathbf{v}\in S}
                                     \frac{\mathbf{v}^\top\boldsymbol{\delta}}{\lVert \mathbf{v}\rVert_2\lVert\boldsymbol{\delta}\rVert_2} \\
@@ -1290,27 +1281,6 @@
                                 is as close as possible to
                                 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>.</p></li>
                                 </ol>
-                                </section>
-                                <section id="omnilens" class="level2">
-                                <h2>omnilens</h2>
-                                <dl>
-                                <dt>prerequisites:</dt>
-                                <dd>
-                                <a href="#tuned-lens">tuned lens</a>.
-                                </dd>
-                                </dl>
-                                <p>TODO determine if this is worth
-                                including, if yes write section</p>
-                                <dl>
-                                <dt>further reading:</dt>
-                                <dd>
-                                <a
-                                href="https://arxiv.org/abs/2608.10260">Interpreting
-                                Language Model Hidden States at
-                                Scale</a>, Pettyjohn <em>et al.</em>
-                                (2026)
-                                </dd>
-                                </dl>
                                 </section>
                                 <section id="coda-lens" class="level2">
                                 <h2>coda lens</h2>
@@ -1480,28 +1450,6 @@
                                 </iframe>
                                 </figure>
                                 </section>
-                                <section id="omega-j-lenses"
-                                class="level2">
-                                <h2><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>-J
-                                lenses</h2>
-                                <dl>
-                                <dt>prerequisites:</dt>
-                                <dd>
-                                <a href="#j-lens">j-lens</a>.
-                                </dd>
-                                </dl>
-                                <p>TODO determine if this is worth
-                                including, if yes write section</p>
-                                <dl>
-                                <dt>further reading:</dt>
-                                <dd>
-                                <a
-                                href="https://arxiv.org/html/2610.31955v1#S1.SS2">A
-                                Mathematical Theory of the Jacobian
-                                Lens</a>, Ostrow <em>et al.</em> (2026)
-                                </dd>
-                                </dl>
-                                </section>
                                 <section id="footnotes"
                                 class="footnotes footnotes-end-of-document"
                                 role="doc-endnotes">
@@ -1551,18 +1499,18 @@
                                 role="doc-backlink">↩︎</a></p></li>
                                 <li id="fn4"><p><a
                                 href="https://en.wikipedia.org/wiki/Whitening_transformation">en.wikipedia.org/wiki/Whitening_transformation</a>.
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Σ</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\Sigma_\ell</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝚺</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\boldsymbol{\Sigma}_\ell</annotation></semantics></math>
                                 is the covariance matrix of
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>h</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">h_\ell</annotation></semantics></math>s
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐡</mi><mo>ℓ</mo></msub><annotation encoding="application/x-tex">\mathbf{h}_\ell</annotation></semantics></math>s
                                 over all words &amp; all passages. We
                                 add
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>I</mi></mrow><annotation encoding="application/x-tex">\lambda I</annotation></semantics></math>
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>𝐈</mi></mrow><annotation encoding="application/x-tex">\lambda \mathbf{I}</annotation></semantics></math>
                                 as a <a
                                 href="https://en.wikipedia.org/wiki/Ridge_regression">ridge
                                 regularisation</a> term which prevents
                                 directions with very small variance from
                                 dominating
-                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t_i(\ell)</annotation></semantics></math>.<a
+                                <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐭</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{t}_i(\ell)</annotation></semantics></math>.<a
                                 href="#fnref4" class="footnote-back"
                                 role="doc-backlink">↩︎</a></p></li>
                                 <li id="fn5"><p>as the name implies, an
